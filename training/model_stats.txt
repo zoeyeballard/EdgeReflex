@@ -1,0 +1,29 @@
+UCI HAR MLP — Model Stats
+========================================
+Test accuracy (float32): 94.44%
+
+Classification report:
+                    precision    recall  f1-score   support
+
+           WALKING       0.94      0.99      0.97       496
+  WALKING_UPSTAIRS       0.93      0.95      0.94       471
+WALKING_DOWNSTAIRS       0.98      0.90      0.94       420
+           SITTING       0.93      0.91      0.92       491
+          STANDING       0.90      0.94      0.92       532
+            LAYING       1.00      0.96      0.98       537
+
+          accuracy                           0.94      2947
+         macro avg       0.95      0.94      0.94      2947
+      weighted avg       0.95      0.94      0.94      2947
+
+
+Quantization summary (INT8, symmetric per-tensor):
+  Layer 0 (561x64): w_scale=0.003225  mean_abs_err=0.000809
+  Layer 1 (64x32): w_scale=0.003034  mean_abs_err=0.000772
+  Layer 2 (32x6): w_scale=0.005234  mean_abs_err=0.001299
+
+Weight array sizes (INT8):
+  Layer 0: 35,968 bytes
+  Layer 1: 2,080 bytes
+  Layer 2: 198 bytes
+  TOTAL: 38,246 bytes (37.3 KB)
