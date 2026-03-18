@@ -29,10 +29,11 @@ from sklearn.metrics import accuracy_score, classification_report
 # CONFIG
 # ──────────────────────────────────────────────
 DATASET_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip"
-DATA_DIR    = "./uci_har_data"
-HEADER_OUT  = "./har_model.h"
-STATS_OUT   = "./model_stats.txt"
-MIF_OUT     = "./weights_hex.mif"
+DATA_DIR    = "./uci_har_data"              # downloaded dataset, stays in /training
+SCALER_OUT  = "./scaler.npz"               # training/scaler.npz — shared with replay.py
+HEADER_OUT  = "../firmware/har_model.h"    # consumed by TM4C
+STATS_OUT   = "./model_stats.txt"          # training/model_stats.txt
+MIF_OUT     = "../fpga/weights_hex.mif"    # consumed by Quartus
 
 # MLP architecture
 HIDDEN_LAYER_1 = 64
@@ -481,6 +482,10 @@ def save_stats(acc, report, layers, errors, stats_path):
 # MAIN
 # ──────────────────────────────────────────────
 if __name__ == "__main__":
+    # Ensure output directories exist before writing anything
+    for _path in [HEADER_OUT, MIF_OUT, STATS_OUT, SCALER_OUT]:
+        os.makedirs(os.path.dirname(os.path.abspath(_path)), exist_ok=True)
+
     # 1. Download
     download_dataset()
 
@@ -494,20 +499,27 @@ if __name__ == "__main__":
     # 3. Train
     mlp, scaler, acc, report = train_model(X_train, y_train, X_test, y_test)
 
-    # 4. Quantize
+    # 4. Save scaler params so replay.py can load them without retraining
+    np.savez(SCALER_OUT,
+             mean=scaler.mean_.astype(np.float32),
+             inv_std=(1.0 / scaler.scale_).astype(np.float32))
+    print(f"      Scaler saved → {SCALER_OUT}")
+
+    # 5. Quantize
     layers, errors = quantize_model(mlp)
 
-    # 5. Export header
+    # 6. Export C header → /firmware
     export_header(layers, scaler, n_features, n_classes, HEADER_OUT)
 
-    # 5. Export .mif for FPGA BRAM
+    # 7. Export .mif → /fpga
     print("[5/5] Exporting FPGA BRAM initialisation file...")
     bram_depth = export_mif(layers, scaler, MIF_OUT)
 
-    # 6. Save stats
+    # 8. Save stats → /training
     save_stats(acc, report, layers, errors, STATS_OUT)
 
     print("\n✓ Pipeline complete.")
     print(f"  → {HEADER_OUT}   (TM4C: #include this)")
-    print(f"  → {MIF_OUT}      (FPGA: load into Quartus BRAM IP, Depth={bram_depth} Width=8)")
+    print(f"  → {MIF_OUT}      (FPGA: Quartus BRAM IP, Depth={bram_depth} Width=8)")
+    print(f"  → {SCALER_OUT}   (analysis/replay.py reads this)")
     print(f"  → {STATS_OUT}")
