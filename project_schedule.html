@@ -1,0 +1,169 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .schedule { font-family: var(--font-sans); color: var(--color-text-primary); padding: 4px 0; }
+  .week-block { margin-bottom: 16px; border: 1px solid var(--color-border-tertiary); border-radius: 12px; overflow: hidden; }
+  .week-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--color-border-tertiary); }
+  .week-num { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+  .w1 { background: #E1F5EE; color: #085041; }
+  .w2 { background: #E6F1FB; color: #0C447C; }
+  .w3 { background: #FAEEDA; color: #633806; }
+  .w4 { background: #EEEDFE; color: #3C3489; }
+  .wx { background: #F1EFE8; color: #444441; }
+  .week-title { font-size: 14px; font-weight: 500; }
+  .week-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-left: auto; white-space: nowrap; }
+  .week-body { padding: 12px 16px; display: flex; gap: 16px; }
+  .col { flex: 1; min-width: 0; }
+  .col-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+  .task-list { list-style: none; margin: 0; padding: 0; }
+  .task-list li { font-size: 12px; color: var(--color-text-primary); padding: 3px 0; padding-left: 14px; position: relative; line-height: 1.5; border-bottom: 1px solid var(--color-border-tertiary); }
+  .task-list li:last-child { border-bottom: none; }
+  .task-list li::before { content: "—"; position: absolute; left: 0; color: var(--color-text-tertiary); }
+  .checkpoint { margin: 0 16px 12px; padding: 8px 12px; border-radius: 6px; font-size: 12px; line-height: 1.5; }
+  .checkpoint.green { background: #E1F5EE; color: #085041; border-left: 3px solid #0F6E56; }
+  .checkpoint.blue { background: #E6F1FB; color: #0C447C; border-left: 3px solid #185FA5; }
+  .checkpoint.amber { background: #FAEEDA; color: #633806; border-left: 3px solid #854F0B; }
+  .checkpoint.purple { background: #EEEDFE; color: #3C3489; border-left: 3px solid #534AB7; }
+  .checkpoint.gray { background: #F1EFE8; color: #444441; border-left: 3px solid #5F5E5A; }
+  .warning { margin: 0 16px 12px; padding: 8px 12px; border-radius: 6px; font-size: 12px; background: #FCEBEB; color: #791F1F; border-left: 3px solid #A32D2D; }
+  .divider { border: none; border-top: 1px solid var(--color-border-tertiary); margin: 0; }
+</style>
+
+<div class="schedule">
+
+  <div class="week-block">
+    <div class="week-header">
+      <span class="week-num w1">Week 1</span>
+      <span class="week-title">Software foundation — no hardware needed yet</span>
+      <span class="week-subtitle">Mar 18 – 24</span>
+    </div>
+    <div class="week-body">
+      <div class="col">
+        <div class="col-label">Python (laptop only)</div>
+        <ul class="task-list">
+          <li>Download UCI HAR dataset</li>
+          <li>Train 2-layer MLP with sklearn</li>
+          <li>Quantize weights to INT8</li>
+          <li>Export as C header file</li>
+          <li>Write NMEA/IMU data replay script</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label">TM4C (once parts arrive)</div>
+        <ul class="task-list">
+          <li>FreeRTOS project skeleton in CCS</li>
+          <li>Four tasks boot and log to UART</li>
+          <li>Queue and semaphore scaffolding</li>
+          <li>Cycle counter instrumentation ready</li>
+          <li>UART replay input working</li>
+        </ul>
+      </div>
+    </div>
+    <div class="checkpoint green">End of week checkpoint: MLP weights exported as C arrays. FreeRTOS tasks boot and communicate. Software inference runs on replayed data and prints class labels to UART. No IMU or FPGA needed yet.</div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <span class="week-num w2">Week 2</span>
+      <span class="week-title">Live hardware + measurement</span>
+      <span class="week-subtitle">Mar 25 – 31</span>
+    </div>
+    <div class="week-body">
+      <div class="col">
+        <div class="col-label">Hardware integration</div>
+        <ul class="task-list">
+          <li>Wire MPU-6050 → TM4C via I2C</li>
+          <li>Replace replay input with live IMU data</li>
+          <li>Wire LCD, display live class label</li>
+          <li>Adaptive sampling rate feedback loop</li>
+          <li>Verify logic analyzer on I2C bus</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label">Measurement + paper</div>
+        <ul class="task-list">
+          <li>GPIO-toggle WCET on every task</li>
+          <li>500-run latency logging to PC</li>
+          <li>Compute RM utilization bound</li>
+          <li>Draft system model section of paper</li>
+          <li>Draft WCET methodology section</li>
+        </ul>
+      </div>
+    </div>
+    <div class="checkpoint blue">End of week checkpoint: Full pipeline live — IMU input, real-time inference, adaptive sampling, LCD output, latency logged. Core research result in hand. Paper is ~40% written. Project is submittable right now if needed.</div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <span class="week-num w3">Week 3</span>
+      <span class="week-title">FPGA stretch goal — decision point first</span>
+      <span class="week-subtitle">Apr 1 – 7</span>
+    </div>
+    <div class="week-body">
+      <div class="col">
+        <div class="col-label">Go/no-go decision Apr 1</div>
+        <ul class="task-list">
+          <li>Week 2 checkpoint fully passed?</li>
+          <li>Latency data clean and logged?</li>
+          <li>5+ days before deadline with no conflicts?</li>
+          <li>If yes to all three → proceed below</li>
+          <li>If no to any → skip to week 4 now</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label">FPGA work (if proceeding)</div>
+        <ul class="task-list">
+          <li>SPI loopback test first — verify link</li>
+          <li>Verilog SPI slave on DE0-CV</li>
+          <li>Layer 1 MAC array in Verilog</li>
+          <li>IRQ line → TM4C binary semaphore</li>
+          <li>Re-measure WCET with offload active</li>
+        </ul>
+      </div>
+    </div>
+    <div class="checkpoint amber">End of week checkpoint: If FPGA attempted — before/after WCET numbers showing schedulability change. If FPGA skipped — paper is 70% written and analysis is complete. Either outcome is fine.</div>
+    <div class="warning">If SPI loopback takes more than 2 days to debug cleanly, stop and write the paper you have. Do not let FPGA debugging follow you into week 4.</div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <span class="week-num w4">Week 4</span>
+      <span class="week-title">Paper, analysis, presentation</span>
+      <span class="week-subtitle">Apr 8 – 14</span>
+    </div>
+    <div class="week-body">
+      <div class="col">
+        <div class="col-label">Paper sections</div>
+        <ul class="task-list">
+          <li>Introduction and motivation</li>
+          <li>System design and task model</li>
+          <li>WCET measurement methodology</li>
+          <li>Schedulability analysis with RM proof</li>
+          <li>Results, latency CDF plots in Python</li>
+          <li>Conclusion and future work</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="col-label">Polish</div>
+        <ul class="task-list">
+          <li>Record a 60-second demo video</li>
+          <li>Clean up all figures and plots</li>
+          <li>Proofread and verify all math</li>
+          <li>Push code to GitHub with README</li>
+          <li>Rehearse verbal explanation of RM proof</li>
+        </ul>
+      </div>
+    </div>
+    <div class="checkpoint purple">End of week checkpoint: Paper submitted. Demo video recorded. GitHub repo clean. You can explain the schedulability result verbally without notes.</div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header">
+      <span class="week-num wx">Buffer</span>
+      <span class="week-title">LA Hacks + finals buffer — nothing scheduled here</span>
+      <span class="week-subtitle">Apr 14 – 26</span>
+    </div>
+    <div class="checkpoint gray">Project should be fully submitted before this window. LA Hacks is Apr 24–26. Your Advanced Digital Design final conflict sits in here too. Do not let project work bleed into this period.</div>
+  </div>
+
+</div>

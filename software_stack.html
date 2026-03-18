@@ -1,0 +1,218 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .stack { font-family: var(--font-sans); color: var(--color-text-primary); padding: 4px 0; }
+  .layer { margin-bottom: 12px; border: 1px solid var(--color-border-tertiary); border-radius: 12px; overflow: hidden; }
+  .layer-header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--color-border-tertiary); }
+  .layer-badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+  .l1 { background: #EEEDFE; color: #3C3489; }
+  .l2 { background: #E6F1FB; color: #0C447C; }
+  .l3 { background: #E1F5EE; color: #085041; }
+  .l4 { background: #FAEEDA; color: #633806; }
+  .l5 { background: #FCEBEB; color: #791F1F; }
+  .l6 { background: #F1EFE8; color: #444441; }
+  .layer-title { font-size: 14px; font-weight: 500; }
+  .layer-where { font-size: 12px; color: var(--color-text-secondary); margin-left: auto; }
+  .layer-body { padding: 10px 16px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .tool-group { min-width: 160px; flex: 1; }
+  .tool-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .tool-list { list-style: none; margin: 0; padding: 0; }
+  .tool-list li { font-size: 12px; padding: 3px 0 3px 14px; position: relative; border-bottom: 1px solid var(--color-border-tertiary); line-height: 1.5; }
+  .tool-list li:last-child { border-bottom: none; }
+  .tool-list li::before { content: "—"; position: absolute; left: 0; color: var(--color-text-tertiary); }
+  .tool-name { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-primary); }
+  .tool-desc { color: var(--color-text-secondary); }
+  .note { margin: 0 16px 10px; padding: 7px 10px; border-radius: 6px; font-size: 12px; line-height: 1.5; background: var(--color-background-secondary); color: var(--color-text-secondary); }
+</style>
+
+<div class="stack">
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l1">Layer 1</span>
+      <span class="layer-title">Offline training and export</span>
+      <span class="layer-where">Your laptop — Python</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">Core tools</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">Python 3.11</span></li>
+          <li><span class="tool-name">scikit-learn</span> <span class="tool-desc">MLP training</span></li>
+          <li><span class="tool-name">numpy</span> <span class="tool-desc">weight manipulation</span></li>
+          <li><span class="tool-name">scipy</span> <span class="tool-desc">feature normalization</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">What you produce</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">weights.h</span> <span class="tool-desc">INT8 C header</span></li>
+          <li><span class="tool-name">replay.py</span> <span class="tool-desc">UART data streamer</span></li>
+          <li><span class="tool-name">weights_hex.mif</span> <span class="tool-desc">for FPGA BRAM</span></li>
+          <li><span class="tool-name">scaler_params.h</span> <span class="tool-desc">mean/std for normalization</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">Sklearn's MLPClassifier trains in seconds on UCI HAR. Export weights by iterating coefs_ and intercepts_, clipping to INT8 range (-128 to 127), and writing a C header. No PyTorch needed at this size.</div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l2">Layer 2</span>
+      <span class="layer-title">TM4C firmware — RTOS and drivers</span>
+      <span class="layer-where">Code Composer Studio (CCS)</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">RTOS</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">FreeRTOS 10.x</span> <span class="tool-desc">scheduler kernel</span></li>
+          <li><span class="tool-name">xTaskCreate</span> <span class="tool-desc">task definitions</span></li>
+          <li><span class="tool-name">xQueueCreate</span> <span class="tool-desc">inter-task data</span></li>
+          <li><span class="tool-name">xSemaphoreCreateBinary</span> <span class="tool-desc">IRQ sync</span></li>
+          <li><span class="tool-name">vTaskDelayUntil</span> <span class="tool-desc">periodic tasks</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">TivaWare drivers</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">I2CMasterControl</span> <span class="tool-desc">MPU-6050</span></li>
+          <li><span class="tool-name">SSIDataPut/Get</span> <span class="tool-desc">SPI to FPGA</span></li>
+          <li><span class="tool-name">UARTCharPut</span> <span class="tool-desc">logging to PC</span></li>
+          <li><span class="tool-name">GPIOPinWrite</span> <span class="tool-desc">LCD + timing pins</span></li>
+          <li><span class="tool-name">SysTickPeriodSet</span> <span class="tool-desc">cycle counter</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">Your code modules</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">imu_task.c</span> <span class="tool-desc">acquire + window</span></li>
+          <li><span class="tool-name">infer_task.c</span> <span class="tool-desc">MLP forward pass</span></li>
+          <li><span class="tool-name">adapt_task.c</span> <span class="tool-desc">rate control logic</span></li>
+          <li><span class="tool-name">display_task.c</span> <span class="tool-desc">LCD updates</span></li>
+          <li><span class="tool-name">log_task.c</span> <span class="tool-desc">UART + watchdog</span></li>
+          <li><span class="tool-name">mlp.c / mlp.h</span> <span class="tool-desc">inference engine</span></li>
+          <li><span class="tool-name">wcet.h</span> <span class="tool-desc">GPIO toggle macros</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">TivaWare is TI's peripheral driver library for the TM4C — it ships free with CCS and handles register-level I2C/SPI/UART configuration. FreeRTOS drops in as a source folder alongside your application code.</div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l3">Layer 3</span>
+      <span class="layer-title">FPGA design — stretch goal only</span>
+      <span class="layer-where">Intel Quartus Prime Lite (free)</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">Quartus tools</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">Quartus Prime Lite</span> <span class="tool-desc">synthesis + P&R</span></li>
+          <li><span class="tool-name">ModelSim-Intel</span> <span class="tool-desc">simulation (you know this)</span></li>
+          <li><span class="tool-name">SignalTap II</span> <span class="tool-desc">on-chip logic analyzer</span></li>
+          <li><span class="tool-name">USB Blaster</span> <span class="tool-desc">DE0-CV programmer</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">Your Verilog modules</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">spi_slave.v</span> <span class="tool-desc">receives feature window</span></li>
+          <li><span class="tool-name">mac_array.v</span> <span class="tool-desc">INT8 multiply-accumulate</span></li>
+          <li><span class="tool-name">weight_rom.v</span> <span class="tool-desc">BRAM initialized from .mif</span></li>
+          <li><span class="tool-name">relu.v</span> <span class="tool-desc">activation unit</span></li>
+          <li><span class="tool-name">irq_gen.v</span> <span class="tool-desc">done interrupt to TM4C</span></li>
+          <li><span class="tool-name">top.v</span> <span class="tool-desc">connects all modules</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">You already know ModelSim from your Advanced Digital Design class — that's your simulation environment before touching real hardware. SignalTap II is Quartus's built-in logic analyzer, useful as a complement to your HiLetgo on the SPI lines.</div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l4">Layer 4</span>
+      <span class="layer-title">Debug and hardware verification</span>
+      <span class="layer-where">Your bench</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">Tools</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">PulseView</span> <span class="tool-desc">HiLetgo logic analyzer UI</span></li>
+          <li><span class="tool-name">Sigrok</span> <span class="tool-desc">protocol decoders (SPI/I2C/UART)</span></li>
+          <li><span class="tool-name">CCS Debugger</span> <span class="tool-desc">breakpoints, register view</span></li>
+          <li><span class="tool-name">PuTTY / screen</span> <span class="tool-desc">UART terminal</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">WCET instrumentation</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">DWT->CYCCNT</span> <span class="tool-desc">ARM cycle counter register</span></li>
+          <li><span class="tool-name">GPIO toggle macros</span> <span class="tool-desc">task entry/exit markers</span></li>
+          <li><span class="tool-name">UART timestamp log</span> <span class="tool-desc">per-inference latency</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">DWT->CYCCNT is the ARM Cortex-M4 hardware cycle counter — it runs at the core clock frequency (80 MHz on TM4C) and costs zero CPU overhead to read. This is your primary WCET measurement tool and the methodology your paper describes.</div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l5">Layer 5</span>
+      <span class="layer-title">Data analysis and paper figures</span>
+      <span class="layer-where">Your laptop — Python</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">Analysis</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">pandas</span> <span class="tool-desc">parse UART log CSV</span></li>
+          <li><span class="tool-name">numpy</span> <span class="tool-desc">WCET statistics</span></li>
+          <li><span class="tool-name">matplotlib</span> <span class="tool-desc">latency CDF plots</span></li>
+          <li><span class="tool-name">scipy.stats</span> <span class="tool-desc">percentile analysis</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">What you produce</div>
+        <ul class="tool-list">
+          <li>Latency CDF (software vs FPGA)</li>
+          <li>Task utilization bar chart</li>
+          <li>Deadline miss rate vs load</li>
+          <li>Adaptive sampling rate timeline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-badge l6">Layer 6</span>
+      <span class="layer-title">Version control and writeup</span>
+      <span class="layer-where">Everywhere</span>
+    </div>
+    <div class="layer-body">
+      <div class="tool-group">
+        <div class="tool-label">Tools</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">Git + GitHub</span> <span class="tool-desc">all code versioned</span></li>
+          <li><span class="tool-name">LaTeX / Overleaf</span> <span class="tool-desc">paper writeup</span></li>
+          <li><span class="tool-name">IEEE conference template</span> <span class="tool-desc">formatting</span></li>
+        </ul>
+      </div>
+      <div class="tool-group">
+        <div class="tool-label">Repo structure</div>
+        <ul class="tool-list">
+          <li><span class="tool-name">/firmware</span> <span class="tool-desc">CCS TM4C project</span></li>
+          <li><span class="tool-name">/fpga</span> <span class="tool-desc">Quartus project</span></li>
+          <li><span class="tool-name">/training</span> <span class="tool-desc">Python ML pipeline</span></li>
+          <li><span class="tool-name">/analysis</span> <span class="tool-desc">plotting scripts + data</span></li>
+          <li><span class="tool-name">/paper</span> <span class="tool-desc">LaTeX source</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">Write the paper in the IEEE two-column conference format on Overleaf — it's free, no install, and the format signals you know how real systems papers are structured. Your professor will notice.</div>
+  </div>
+
+</div>
