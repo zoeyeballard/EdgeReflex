@@ -26,7 +26,7 @@
 #define INFERENCE_LOG_EACH_WINDOW    0
 #define WCET_RING_SIZE               256U
 #define WCET_HIST_BINS               64U
-#define WCET_HIST_BIN_SHIFT          5U
+#define WCET_HIST_BIN_SHIFT          15U
 #define WCET_HIST_BIN_WIDTH          (1UL << WCET_HIST_BIN_SHIFT)
 
 //*****************************************************************************
