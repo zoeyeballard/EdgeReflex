@@ -35,9 +35,11 @@ extern volatile uint32_t    g_uiLastCycles;   // DWT cycles for last inference
 typedef struct
 {
     uint32_t count;
+    uint32_t warmup_discarded;
     uint32_t last_cycles;
     uint32_t min_cycles;
     uint32_t max_cycles;
+    uint32_t max_unpreempted_cycles;
     uint32_t mean_cycles;
     uint32_t p99_cycles;
     uint32_t approx_bound_cycles;
@@ -45,6 +47,8 @@ typedef struct
     uint32_t hist_bin_width_cycles;
     uint32_t hist_bins;
     uint32_t hist_overflow;
+    uint32_t preempted_count;
+    uint32_t unpreempted_count;
 } InferenceWcetStats_t;
 
 void InferenceWcetGetStats(InferenceWcetStats_t *pStats);

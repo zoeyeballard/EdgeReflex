@@ -22,11 +22,21 @@ typedef struct
     uint32_t timestamp_ms;                    // tick when window closed
 } SensorWindow_t;
 
+typedef struct
+{
+    uint32_t count;
+    uint32_t last_cycles;
+    uint32_t min_cycles;
+    uint32_t max_cycles;
+    uint32_t mean_cycles;
+} SensorTaskTimingStats_t;
+
 //*****************************************************************************
 // Queue handle - defined in sensor_task.c, used by inference_task.c
 //*****************************************************************************
 extern QueueHandle_t g_xSensorQueue;
 
 extern uint32_t SensorTaskInit(void);
+void SensorTaskTimingGetStats(SensorTaskTimingStats_t *pStats);
 
 #endif // __SENSOR_TASK_H__

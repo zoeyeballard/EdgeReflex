@@ -38,6 +38,38 @@
 
 #define UART_TASK_STACK     256
 
+#define DWT_CYCCNT  (*((volatile uint32_t *)0xE0001004))
+#define DWT_SNAPSHOT()  (DWT_CYCCNT)
+
+typedef struct
+{
+    uint32_t count;
+    uint32_t last;
+    uint32_t min;
+    uint32_t max;
+    uint64_t sum;
+} UARTTimingState_t;
+
+static UARTTimingState_t g_sUartTiming = {0U, 0U, UINT32_MAX, 0U, 0ULL};
+
+static void UARTTimingRecord(uint32_t cycles)
+{
+    taskENTER_CRITICAL();
+    g_sUartTiming.count++;
+    g_sUartTiming.last = cycles;
+    g_sUartTiming.sum += cycles;
+
+    if (cycles < g_sUartTiming.min)
+    {
+        g_sUartTiming.min = cycles;
+    }
+    if (cycles > g_sUartTiming.max)
+    {
+        g_sUartTiming.max = cycles;
+    }
+    taskEXIT_CRITICAL();
+}
+
 #define REPLAY_START0   0xAA
 #define REPLAY_START1   0x55
 #define REPLAY_END      0xBB
@@ -123,10 +155,14 @@ static void UARTTask(void *pvParameters)
     SensorWindow_t  replay_window;
     uint32_t        replay_count = 0;
     uint32_t        heartbeat_count = 0;
+    uint32_t        t0;
+    uint32_t        t1;
     TickType_t      xLastHeartbeat = xTaskGetTickCount();
 
     while (1)
     {
+        t0 = DWT_SNAPSHOT();
+
         // --- Heartbeat every 5 seconds ---
         if ((xTaskGetTickCount() - xLastHeartbeat) >= pdMS_TO_TICKS(5000))
         {
@@ -170,6 +206,9 @@ static void UARTTask(void *pvParameters)
             }
         }
 
+        t1 = DWT_SNAPSHOT();
+        UARTTimingRecord(t1 - t0);
+
         vTaskDelay(pdMS_TO_TICKS(10));  // yield; 10 ms RX poll granularity
     }
 }
@@ -185,4 +224,20 @@ uint32_t UARTTaskInit(void)
         return 1;
     }
     return 0;
+}
+
+void UARTTaskTimingGetStats(UARTTaskTimingStats_t *pStats)
+{
+    if (pStats == NULL)
+    {
+        return;
+    }
+
+    taskENTER_CRITICAL();
+    pStats->count = g_sUartTiming.count;
+    pStats->last_cycles = g_sUartTiming.last;
+    pStats->min_cycles = (g_sUartTiming.count == 0U) ? 0U : g_sUartTiming.min;
+    pStats->max_cycles = g_sUartTiming.max;
+    pStats->mean_cycles = (g_sUartTiming.count == 0U) ? 0U : (uint32_t)(g_sUartTiming.sum / g_sUartTiming.count);
+    taskEXIT_CRITICAL();
 }

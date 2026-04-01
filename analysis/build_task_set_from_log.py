@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""
+Build a task-set CSV from captured WCET_CSV and TASK_CSV lines.
+
+Usage:
+  python build_task_set_from_log.py --log wcet_run1.log --out task_set_measured.csv
+"""
+
+import argparse
+from pathlib import Path
+from typing import Dict, List, Optional
+
+
+WCET_KEYS = [
+    "count",
+    "warmup_discarded",
+    "last",
+    "min",
+    "max",
+    "max_unpreempted",
+    "mean",
+    "p99",
+    "bound",
+    "overhead",
+    "bin_width",
+    "hist_overflow",
+    "preempted",
+    "unpreempted",
+    "uptime_ms",
+]
+
+TASK_KEYS = [
+    "count",
+    "sensor_last",
+    "sensor_min",
+    "sensor_max",
+    "sensor_mean",
+    "uart_last",
+    "uart_min",
+    "uart_max",
+    "uart_mean",
+    "logger_last",
+    "logger_min",
+    "logger_max",
+    "logger_mean",
+    "uptime_ms",
+]
+
+
+def parse_last_tagged_line(log_path: Path, tag: str, keys: List[str]) -> Optional[Dict[str, int]]:
+    last_values: Optional[List[int]] = None
+
+    with log_path.open("r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            if tag not in line:
+                continue
+            idx = line.find(tag)
+            payload = line[idx:].strip()
+            parts = payload.split(",")
+            if len(parts) != (1 + len(keys)):
+                continue
+            try:
+                vals = [int(x) for x in parts[1:]]
+            except ValueError:
+                continue
+            last_values = vals
+
+    if last_values is None:
+        return None
+    return dict(zip(keys, last_values))
+
+
+def cycles_to_ms(cycles: int, cpu_hz: float) -> float:
+    return (float(cycles) / cpu_hz) * 1000.0
+
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Build measured task_set CSV from UART log")
+    p.add_argument("--log", required=True, help="UART log file")
+    p.add_argument("--out", default="task_set_measured.csv", help="Output CSV path")
+    p.add_argument("--cpu-hz", type=float, default=50_000_000.0, help="CPU clock in Hz")
+    p.add_argument("--sensor-period-ms", type=float, default=20.0, help="Sensor task period")
+    p.add_argument("--uart-period-ms", type=float, default=10.0, help="UART task loop period")
+    p.add_argument("--window-size", type=int, default=50, help="Samples per inference window")
+    return p.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    log_path = Path(args.log)
+
+    if not log_path.exists():
+        print(f"[error] log file not found: {log_path}")
+        return 2
+
+    wcet = parse_last_tagged_line(log_path, "WCET_CSV,", WCET_KEYS)
+    task = parse_last_tagged_line(log_path, "TASK_CSV,", TASK_KEYS)
+
+    if wcet is None:
+        print("[error] no WCET_CSV line found")
+        return 2
+    if task is None:
+        print("[error] no TASK_CSV line found")
+        print("        Rebuild/flash firmware that includes TASK_CSV output.")
+        return 2
+
+    sensor_period = args.sensor_period_ms
+    uart_period = args.uart_period_ms
+    infer_period = args.sensor_period_ms * float(args.window_size)
+    logger_period = infer_period
+
+    sensor_ci_ms = cycles_to_ms(task["sensor_max"], args.cpu_hz)
+    uart_ci_ms = cycles_to_ms(task["uart_max"], args.cpu_hz)
+    logger_ci_ms = cycles_to_ms(task["logger_max"], args.cpu_hz)
+
+    out = Path(args.out)
+    with out.open("w", encoding="utf-8", newline="\n") as f:
+        f.write("task,priority,period_ms,deadline_ms,ci_ms,ci_cycles,ci_source\n")
+        # Script convention: lower number = higher priority.
+        # Keep this aligned to current firmware urgency order.
+        f.write(f"Sensor,1,{sensor_period:.3f},{sensor_period:.3f},{sensor_ci_ms:.3f},,measured.task_csv_max\n")
+        f.write(f"Inference,2,{infer_period:.3f},{infer_period:.3f},,,from_wcet\n")
+        f.write(f"UART,3,{uart_period:.3f},{uart_period:.3f},{uart_ci_ms:.3f},,measured.task_csv_max\n")
+        f.write(f"Logger,4,{logger_period:.3f},{logger_period:.3f},{logger_ci_ms:.3f},,measured.task_csv_max\n")
+
+    print(f"[ok] wrote {out}")
+    print("[summary] derived ci_ms from TASK_CSV max cycles:")
+    print(f"  Sensor: {sensor_ci_ms:.3f} ms")
+    print(f"  UART  : {uart_ci_ms:.3f} ms")
+    print(f"  Logger: {logger_ci_ms:.3f} ms")
+    print("[next] run:")
+    print(f"  python wcet_rm_report.py --log {log_path} --task-csv {out} --ci bound")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

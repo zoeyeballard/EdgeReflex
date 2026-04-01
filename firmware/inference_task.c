@@ -24,6 +24,7 @@
 
 #define INFERENCE_USE_HAR_MODEL      1
 #define INFERENCE_LOG_EACH_WINDOW    0
+#define WCET_WARMUP_SAMPLES          8U
 #define WCET_RING_SIZE               256U
 #define WCET_HIST_BINS               64U
 #define WCET_HIST_BIN_SHIFT          15U
@@ -48,13 +49,17 @@ typedef struct
     uint32_t last;
     uint32_t min;
     uint32_t max;
+    uint32_t max_unpreempted;
     uint32_t overhead;
     uint32_t hist_overflow;
+    uint32_t warmup_discarded;
+    uint32_t preempted_count;
+    uint32_t unpreempted_count;
     uint64_t sum;
 } InferenceWcetState_t;
 
 static InferenceWcetState_t g_sWcet = {
-    {0}, 0U, {0}, 0U, 0U, UINT32_MAX, 0U, 0U, 0U, 0ULL
+    {0}, 0U, {0}, 0U, 0U, UINT32_MAX, 0U, 0U, 0U, 0U, 0U, 0U, 0ULL
 };
 
 static void DWT_Init(void)
@@ -96,7 +101,7 @@ static uint32_t WcetSubtractOverhead(uint32_t raw)
     return 0U;
 }
 
-static void WcetRecordSample(uint32_t cycles)
+static void WcetRecordSample(uint32_t cycles, bool preempted)
 {
     uint32_t bin;
 
@@ -113,6 +118,19 @@ static void WcetRecordSample(uint32_t cycles)
     if (cycles > g_sWcet.max)
     {
         g_sWcet.max = cycles;
+    }
+
+    if (preempted)
+    {
+        g_sWcet.preempted_count++;
+    }
+    else
+    {
+        g_sWcet.unpreempted_count++;
+        if (cycles > g_sWcet.max_unpreempted)
+        {
+            g_sWcet.max_unpreempted = cycles;
+        }
     }
 
     g_sWcet.ring[g_sWcet.ring_head] = cycles;
@@ -198,10 +216,13 @@ static HarClass_t RunHarInference(const SensorWindow_t *pWindow)
 static void InferenceTask(void *pvParameters)
 {
     SensorWindow_t window;
+    TickType_t tick_before;
+    TickType_t tick_after;
     uint32_t t0;
     uint32_t t1;
     uint32_t raw_cycles;
     uint32_t net_cycles;
+    bool preempted;
 
     (void)pvParameters;
 
@@ -211,6 +232,7 @@ static void InferenceTask(void *pvParameters)
         xQueueReceive(g_xSensorQueue, &window, portMAX_DELAY);
 
         // --- Timed inference block ---
+        tick_before = xTaskGetTickCount();
         t0 = DWT_SNAPSHOT();
         #if INFERENCE_USE_HAR_MODEL
         g_eLastClass = RunHarInference(&window);
@@ -218,12 +240,24 @@ static void InferenceTask(void *pvParameters)
         g_eLastClass = run_inference_stub(&window);
         #endif
         t1 = DWT_SNAPSHOT();
+        tick_after = xTaskGetTickCount();
         // --- End timed block ---
 
         raw_cycles = t1 - t0;
         net_cycles = WcetSubtractOverhead(raw_cycles);
         g_uiLastCycles = net_cycles;
-        WcetRecordSample(net_cycles);
+        preempted = ((tick_after - tick_before) != 0U);
+
+        if (g_sWcet.warmup_discarded < WCET_WARMUP_SAMPLES)
+        {
+            taskENTER_CRITICAL();
+            g_sWcet.warmup_discarded++;
+            taskEXIT_CRITICAL();
+        }
+        else
+        {
+            WcetRecordSample(net_cycles, preempted);
+        }
 
         #if INFERENCE_LOG_EACH_WINDOW
         xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
@@ -276,14 +310,18 @@ void InferenceWcetGetStats(InferenceWcetStats_t *pStats)
     taskENTER_CRITICAL();
 
     pStats->count = g_sWcet.count;
+    pStats->warmup_discarded = g_sWcet.warmup_discarded;
     pStats->last_cycles = g_sWcet.last;
     pStats->min_cycles = (g_sWcet.count == 0U) ? 0U : g_sWcet.min;
     pStats->max_cycles = g_sWcet.max;
+    pStats->max_unpreempted_cycles = g_sWcet.max_unpreempted;
     pStats->mean_cycles = (g_sWcet.count == 0U) ? 0U : (uint32_t)(g_sWcet.sum / g_sWcet.count);
     pStats->dwt_overhead_cycles = g_sWcet.overhead;
     pStats->hist_bin_width_cycles = WCET_HIST_BIN_WIDTH;
     pStats->hist_bins = WCET_HIST_BINS;
     pStats->hist_overflow = g_sWcet.hist_overflow;
+    pStats->preempted_count = g_sWcet.preempted_count;
+    pStats->unpreempted_count = g_sWcet.unpreempted_count;
 
     if (g_sWcet.count == 0U)
     {
