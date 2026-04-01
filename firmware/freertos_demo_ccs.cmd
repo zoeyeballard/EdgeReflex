@@ -30,8 +30,8 @@
 /* If you are using CCS for building, it is probably better to make any such */
 /* modifications in your CCS project and leave this file alone.              */
 /*                                                                           */
-/* --heap_size=0                                                             */
-/* --stack_size=256                                                          */
+/* --heap_size=0 */
+/* --stack_size=512 */
 /* --library=rtsv7M3_T_le_eabi.lib                                           */
 
 /* The starting address of the application.  Normally the interrupt vectors  */
@@ -55,6 +55,7 @@ SECTIONS
 {
     .intvecs:   > APP_BASE
     .text   :   > FLASH
+    .rodata :   > FLASH
     .const  :   > FLASH
     .cinit  :   > FLASH
     .pinit  :   > FLASH

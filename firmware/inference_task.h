@@ -32,6 +32,24 @@ typedef enum
 extern volatile HarClass_t  g_eLastClass;
 extern volatile uint32_t    g_uiLastCycles;   // DWT cycles for last inference
 
+typedef struct
+{
+    uint32_t count;
+    uint32_t last_cycles;
+    uint32_t min_cycles;
+    uint32_t max_cycles;
+    uint32_t mean_cycles;
+    uint32_t p99_cycles;
+    uint32_t approx_bound_cycles;
+    uint32_t dwt_overhead_cycles;
+    uint32_t hist_bin_width_cycles;
+    uint32_t hist_bins;
+    uint32_t hist_overflow;
+} InferenceWcetStats_t;
+
+void InferenceWcetGetStats(InferenceWcetStats_t *pStats);
+uint32_t InferenceWcetCopyHistogram(uint32_t *pBins, uint32_t maxBins);
+
 extern uint32_t InferenceTaskInit(void);
 
 #endif // __INFERENCE_TASK_H__

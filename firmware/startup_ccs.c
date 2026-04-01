@@ -67,8 +67,7 @@ extern void xPortSysTickHandler(void);
 // the program if located at a start address other than 0.
 //
 //*****************************************************************************
-#pragma DATA_SECTION(g_pfnVectors, ".intvecs")
-void (* const g_pfnVectors[])(void) =
+void (* const g_pfnVectors[])(void) __attribute__((section(".intvecs"), used)) =
 {
     (void (*)(void))((uint32_t)&__STACK_TOP),
                                             // The initial stack pointer

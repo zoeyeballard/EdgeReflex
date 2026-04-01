@@ -85,6 +85,8 @@
 //
 //*****************************************************************************
 SemaphoreHandle_t g_pUARTSemaphore;
+volatile uint32_t g_ui32StackOverflowCount = 0;
+volatile const char *g_pcStackOverflowTaskName = 0;
 
 //*****************************************************************************
 //
@@ -107,6 +109,10 @@ __error__(char *pcFilename, uint32_t ui32Line)
 void
 vApplicationStackOverflowHook(xTaskHandle *pxTask, char *pcTaskName)
 {
+    (void)pxTask;
+    g_ui32StackOverflowCount++;
+    g_pcStackOverflowTaskName = pcTaskName;
+
     //
     // This function can not return, so loop forever.  Interrupts are disabled
     // on entry to this function, so no processor interrupts will interrupt
@@ -183,10 +189,21 @@ main(void)
     g_pUARTSemaphore = xSemaphoreCreateMutex();
 
 		// ADD:
-		if(SensorTaskInit()    != 0) { while(1){} }
-		if(InferenceTaskInit() != 0) { while(1){} }
-		if(UARTTaskInit()      != 0) { while(1){} }
-		if(LoggerTaskInit()    != 0) { while(1){} }
+		UARTprintf("Initializing SensorTask...\n");
+		if(SensorTaskInit()    != 0) { UARTprintf("SensorTaskInit FAILED\n"); while(1){} }
+		UARTprintf("SensorTask OK\n");
+		
+		UARTprintf("Initializing InferenceTask...\n");
+		if(InferenceTaskInit() != 0) { UARTprintf("InferenceTaskInit FAILED\n"); while(1){} }
+		UARTprintf("InferenceTask OK\n");
+		
+		UARTprintf("Initializing UARTTask...\n");
+		if(UARTTaskInit()      != 0) { UARTprintf("UARTTaskInit FAILED\n"); while(1){} }
+		UARTprintf("UARTTask OK\n");
+		
+		UARTprintf("Initializing LoggerTask...\n");
+		if(LoggerTaskInit()    != 0) { UARTprintf("LoggerTaskInit FAILED\n"); while(1){} }
+		UARTprintf("LoggerTask OK\n");
 
     //
     // Start the scheduler.  This should not return.
