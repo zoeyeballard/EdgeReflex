@@ -1,0 +1,91 @@
+Create a technical presentation (10-14 slides) for an embedded WCET + RM schedulability study on TM4C123G (FreeRTOS), using the supplied metrics and plots.
+
+Audience:
+- Embedded systems faculty/engineers
+- Focus on methodology validity, measured evidence, and schedulability outcomes
+
+Required content and structure:
+1) Problem and system context
+- Hardware/software stack and timing constraints
+- Why WCET and RM are needed for this project
+
+2) Measurement methodology
+- DWT cycle counter instrumentation around inference and per-task timing probes
+- Warmup discard policy
+- Fixed-size buffers, no dynamic allocation
+- Logging architecture (WCET_CSV, TASK_CSV)
+
+3) WCET quality and confidence
+- Discuss count, p99, max, bound, overhead, histogram overflow
+- Explicitly mention preempted_ratio caveat and impact on max_unpreempted
+
+4) Inference WCET results table
+- Present min/mean/p99/max/bound in cycles and ms
+- Highlight selected C_i for analysis (bound)
+
+5) Single-task RM result (Inference)
+- Show utilization and response-time outcome
+
+6) Multi-task task set and assumptions
+- Sensor, UART, Inference, Logger
+- Periods, deadlines, C_i inputs and data sources
+
+7) Full RTA results
+- Show pass/fail per task and margins
+- Explicitly call out UART miss if present
+
+8) Interpretation and engineering implications
+- What is already safe
+- What currently fails and why
+
+9) Remediation options
+- Priority assignment review
+- Separate UART modes (heartbeat vs replay)
+- Reduce UART compute/load or adjust period/deadline
+- Improve preemption classification method
+
+10) Next validation campaign plan
+- Exact rerun checklist and acceptance criteria
+
+Insert and reference these figure placeholders exactly where appropriate:
+- [[FIG_WCET_TREND]]        (analysis/plots/wcet_trend.png)
+- [[FIG_PREEMPT_RATIO]]     (analysis/plots/preemption_ratio.png)
+- [[FIG_WCET_HIST]]         (analysis/plots/wcet_hist_latest.png)
+- [[FIG_RTA_MARGINS]]       (analysis/plots/rta_margins.png)
+- [[FIG_UTIL_BOUND]]        (analysis/plots/utilization_vs_bound.png)
+
+Use this numeric summary in the slides:
+- Campaign: 1800 s capture
+- Inference samples: 1902, warmup_discarded: 8
+- min: 2,050,811 cycles (41.016 ms)
+- mean: 2,050,815 cycles (41.016 ms)
+- p99: 2,064,383 cycles (41.288 ms)
+- max: 2,050,821 cycles (41.016 ms)
+- bound: 2,307,173 cycles (46.143 ms)
+- overhead: 4 cycles
+- hist_overflow: 0
+- preempted_ratio: 100%
+
+Single-task RM (Inference only):
+- C_i(bound)=46.143 ms, T=D=1000 ms
+- U=0.046143
+- R=46.143 ms, margin=953.857 ms
+- Result: YES
+
+Measured non-inference C_i (from TASK_CSV max):
+- Sensor: 0.133 ms
+- UART: 1.757 ms
+- Logger: 26.819 ms
+
+Full multi-task RTA (bound case):
+- U_total=0.255312, U_bound(n=4)=0.756828 (utilization test PASS)
+- Sensor: R=0.133 ms, D=20 ms, margin=19.867, YES
+- Inference: R=46.542 ms, D=1000 ms, margin=953.458, YES
+- UART: R=48.033 ms, D=10 ms, margin=-38.033, NO
+- Logger: R=89.440 ms, D=1000 ms, margin=910.560, YES
+
+Tone and output requirements:
+- Keep claims precise and evidence-based.
+- Include one slide for limitations and threats to validity.
+- Include one slide with concrete next actions and owners.
+- Output slide-by-slide bullets plus speaker notes.
