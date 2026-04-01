@@ -1,0 +1,188 @@
+//*****************************************************************************
+// uart_task.c - UART comms / replay task.
+//
+// Two responsibilities:
+//
+// 1. TX heartbeat: prints a status line every 5 seconds so you know the
+//    system is alive even if sensor/inference are blocked.
+//
+// 2. RX replay: listens for incoming bytes on UART0 from your PC.
+//    A Python script on the PC sends pre-recorded IMU windows in the
+//    replay frame format below. The task repackages them into SensorWindow_t
+//    and injects them directly into g_xSensorQueue, bypassing the sensor
+//    task. This lets you test inference end-to-end before the IMU arrives.
+//
+// Replay frame format (little-endian):
+//   [0]      0xAA           - start byte
+//   [1]      0x55           - start byte
+//   [2..3]   uint16_t       - window index (for sequencing checks)
+//   [4..603] int16_t[50][6] - raw sample data (WINDOW_SIZE * SENSOR_AXES * 2)
+//   [604]    uint8_t        - XOR checksum of bytes [2..603]
+//   [605]    0xBB           - end byte
+//   Total: 606 bytes per frame
+//*****************************************************************************
+
+#include <stdbool.h>
+#include <stdint.h>
+#include "inc/hw_memmap.h"
+#include "driverlib/uart.h"
+#include "utils/uartstdio.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+
+#include "sensor_task.h"
+#include "uart_task.h"
+#include "priorities.h"
+
+#define UART_TASK_STACK     256
+
+#define REPLAY_START0   0xAA
+#define REPLAY_START1   0x55
+#define REPLAY_END      0xBB
+#define REPLAY_HEADER   4                                   // 2 start + 2 idx
+#define REPLAY_PAYLOAD  (WINDOW_SIZE * SENSOR_AXES * 2)    // 600 bytes
+#define REPLAY_FRAME    (REPLAY_HEADER + REPLAY_PAYLOAD + 1 + 1) // 606 bytes
+
+extern SemaphoreHandle_t g_pUARTSemaphore;
+
+//*****************************************************************************
+// read_byte - blocking single-byte read from UART0 raw registers.
+// UARTStdioConfig takes over UART0 for printf but the underlying RX FIFO
+// is still readable directly. Blocks in 1 ms slices to stay RTOS-friendly.
+//*****************************************************************************
+static uint8_t read_byte(void)
+{
+    while (UARTCharsAvail(UART0_BASE) == false)
+    {
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+    return (uint8_t)UARTCharGetNonBlocking(UART0_BASE);
+}
+
+//*****************************************************************************
+// try_parse_replay_frame - called when REPLAY_START0 is seen.
+// Returns true and fills *pWindow if a valid frame is received.
+//*****************************************************************************
+static bool try_parse_replay_frame(SensorWindow_t *pWindow)
+{
+    uint8_t  b;
+    uint8_t  chk = 0;
+    uint16_t window_idx;
+    uint8_t  raw[REPLAY_PAYLOAD];
+
+    // Second start byte
+    b = read_byte();
+    if (b != REPLAY_START1) return false;
+
+    // Window index (2 bytes, little-endian) - included in checksum
+    uint8_t idx_lo = read_byte();
+    uint8_t idx_hi = read_byte();
+    chk ^= idx_lo;
+    chk ^= idx_hi;
+    window_idx = (uint16_t)(idx_lo | (idx_hi << 8));
+    (void)window_idx;   // use for sequence checking later if needed
+
+    // Payload
+    for (int i = 0; i < REPLAY_PAYLOAD; i++)
+    {
+        raw[i] = read_byte();
+        chk ^= raw[i];
+    }
+
+    // Checksum byte (covers bytes [2..603])
+    uint8_t rx_chk = read_byte();
+    if (rx_chk != chk) return false;
+
+    // End byte
+    b = read_byte();
+    if (b != REPLAY_END) return false;
+
+    // Unpack into SensorWindow_t
+    int byte_idx = 0;
+    for (int s = 0; s < WINDOW_SIZE; s++)
+    {
+        for (int a = 0; a < SENSOR_AXES; a++)
+        {
+            uint8_t lo = raw[byte_idx++];
+            uint8_t hi = raw[byte_idx++];
+            pWindow->data[s][a] = (int16_t)(lo | (hi << 8));
+        }
+    }
+    pWindow->timestamp_ms = xTaskGetTickCount();
+
+    return true;
+}
+
+//*****************************************************************************
+// UARTTask
+//*****************************************************************************
+static void UARTTask(void *pvParameters)
+{
+    SensorWindow_t  replay_window;
+    uint32_t        replay_count = 0;
+    uint32_t        heartbeat_count = 0;
+    TickType_t      xLastHeartbeat = xTaskGetTickCount();
+
+    while (1)
+    {
+        // --- Heartbeat every 5 seconds ---
+        if ((xTaskGetTickCount() - xLastHeartbeat) >= pdMS_TO_TICKS(5000))
+        {
+            xLastHeartbeat = xTaskGetTickCount();
+            xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
+            UARTprintf("[UART]  heartbeat #%u  replay_rx=%u\n",
+                       heartbeat_count++, replay_count);
+            xSemaphoreGive(g_pUARTSemaphore);
+        }
+
+        // --- Non-blocking RX poll for replay frames ---
+        if (UARTCharsAvail(UART0_BASE))
+        {
+            uint8_t b = (uint8_t)UARTCharGetNonBlocking(UART0_BASE);
+            if (b == REPLAY_START0)
+            {
+                if (try_parse_replay_frame(&replay_window))
+                {
+                    // Inject into sensor queue as if it came from real IMU
+                    if (xQueueSend(g_xSensorQueue, &replay_window, 0) == pdPASS)
+                    {
+                        replay_count++;
+                        xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
+                        UARTprintf("[UART]  replay frame %u injected\n",
+                                   replay_count);
+                        xSemaphoreGive(g_pUARTSemaphore);
+                    }
+                    else
+                    {
+                        xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
+                        UARTprintf("[UART]  replay frame dropped (queue full)\n");
+                        xSemaphoreGive(g_pUARTSemaphore);
+                    }
+                }
+                else
+                {
+                    xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
+                    UARTprintf("[UART]  replay frame BAD checksum/framing\n");
+                    xSemaphoreGive(g_pUARTSemaphore);
+                }
+            }
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10));  // yield; 10 ms RX poll granularity
+    }
+}
+
+//*****************************************************************************
+// UARTTaskInit
+//*****************************************************************************
+uint32_t UARTTaskInit(void)
+{
+    if (xTaskCreate(UARTTask, "UART", UART_TASK_STACK, NULL,
+                    tskIDLE_PRIORITY + PRIORITY_UART_TASK, NULL) != pdTRUE)
+    {
+        return 1;
+    }
+    return 0;
+}

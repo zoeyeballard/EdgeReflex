@@ -1,0 +1,232 @@
+Dependencies for Project 'freertos_demo', Target 'freertos_demo': (DO NOT MODIFY !)
+CompilerVersion: 6240000::V6.24::ARMCLANG
+F (..\drivers\buttons.c)(0x69BB57E2)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/buttons.o -MMD)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_gpio.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\pin_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\gpio.h)(0x69BB57DF)
+I (..\drivers\buttons.h)(0x69BB57E2)
+F (.\freertos_demo.c)(0x69C2C448)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/freertos_demo.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\gpio.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\pin_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\uart.h)(0x69BB57DF)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (sensor_task.h)(0x69C2C1F5)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (inference_task.h)(0x69C2C212)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+I (uart_task.h)(0x69C2C226)
+I (logger_task.h)(0x69C2C24A)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+F (..\..\..\..\third_party\FreeRTOS\Source\portable\MemMang\heap_2.c)(0x69BB57E6)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/heap_2.o -MMD)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+F (.\led_task.c)(0x69BB57E3)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/led_task.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\gpio.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\drivers\rgb.h)(0x69BB57E2)
+I (..\drivers\buttons.h)(0x69BB57E2)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (led_task.h)(0x69BB57E3)
+I (priorities.h)(0x69C2C2A8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+F (..\..\..\..\third_party\FreeRTOS\Source\list.c)(0x69BB57E6)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/list.o -MMD)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+F (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\port.c)(0x69BB57E6)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/port.o -MMD)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+F (..\..\..\..\third_party\FreeRTOS\Source\queue.c)(0x69BB57E6)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/queue.o -MMD)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+F (..\drivers\rgb.c)(0x69BB57E2)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/rgb.o -MMD)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_timer.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_ints.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\pin_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\timer.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\gpio.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\interrupt.h)(0x69BB57DF)
+I (..\drivers\rgb.h)(0x69BB57E2)
+F (.\startup_rvmdk.S)(0x69BB57E3)(--target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -masm=auto  -Wa,armasm,--diag_suppress=A1950W -c-gdwarf-4 -D__MICROLIB -D__EVAL -MMD-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION=543 -DTM4C123GH6PM-o ./rvmdk/startup_rvmdk.o)
+F (.\switch_task.c)(0x69BB57E3)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/switch_task.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_gpio.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\gpio.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\drivers\buttons.h)(0x69BB57E2)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (switch_task.h)(0x69BB57E3)
+I (led_task.h)(0x69BB57E3)
+I (priorities.h)(0x69C2C2A8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+F (..\..\..\..\third_party\FreeRTOS\Source\tasks.c)(0x69BB57E6)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/tasks.o -MMD)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\timers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\StackMacros.h)(0x69BB57E6)
+F (..\..\..\..\utils\uartstdio.c)(0x69BB57E8)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/uartstdio.o -MMD)
+I (..\..\..\..\inc\hw_ints.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_uart.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\debug.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\interrupt.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\rom_map.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\driverlib\uart.h)(0x69BB57DF)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+F (..\..\..\..\utils\ustdlib.c)(0x69BB57E8)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/ustdlib.o -MMD)
+I (..\..\..\..\driverlib\debug.h)(0x69BB57DF)
+I (..\..\..\..\utils\ustdlib.h)(0x69BB57E8)
+F (.\sensor_task.c)(0x69C2C10C)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/sensor_task.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\sysctl.h)(0x69BB57DF)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+I (sensor_task.h)(0x69C2C1F5)
+I (priorities.h)(0x69C2C2A8)
+F (.\inference_task.c)(0x69C2C14A)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/inference_task.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\inc\hw_types.h)(0x69BB57E5)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+I (sensor_task.h)(0x69C2C1F5)
+I (inference_task.h)(0x69C2C212)
+I (priorities.h)(0x69C2C2A8)
+F (.\uart_task.c)(0x69C2C16D)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/uart_task.o -MMD)
+I (..\..\..\..\inc\hw_memmap.h)(0x69BB57E5)
+I (..\..\..\..\driverlib\uart.h)(0x69BB57DF)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+I (sensor_task.h)(0x69C2C1F5)
+I (uart_task.h)(0x69C2C226)
+I (priorities.h)(0x69C2C2A8)
+F (.\logger_task.c)(0x69C2C199)(-xc --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__EVAL -D__MICROLIB -gdwarf-4 -O2 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I . -I .. -I ../../../.. -I ../../../../third_party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../../../../third_party/FreeRTOS -I ../../../../third_party/FreeRTOS/Source/include -I ../../../../third_party-IC:/Keil_v5/ARM/Packs/Keil/TM4C_DFP/1.1.0/Device/Include/TM4C123-D__UVISION_VERSION="543" -DTM4C123GH6PM -Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o ./rvmdk/logger_task.o -MMD)
+I (..\..\..\..\utils\uartstdio.h)(0x69BB57E8)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\FreeRTOS.h)(0x69BB57E6)
+I (FreeRTOSConfig.h)(0x69BB57E2)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\projdefs.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\portable.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\deprecated_definitions.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\portable\RVDS\ARM_CM4F\portmacro.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\mpu_wrappers.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\task.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\list.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\semphr.h)(0x69BB57E6)
+I (..\..\..\..\third_party\FreeRTOS\Source\include\queue.h)(0x69BB57E6)
+I (inference_task.h)(0x69C2C212)
+I (logger_task.h)(0x69C2C24A)
+I (priorities.h)(0x69C2C2A8)
+F (..\..\..\..\driverlib\rvmdk\driverlib.lib)(0x69BB57DF)()
+F (.\readme.txt)(0x69BB57E3)()
