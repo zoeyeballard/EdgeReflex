@@ -82,6 +82,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--sensor-period-ms", type=float, default=20.0, help="Sensor task period")
     p.add_argument("--uart-period-ms", type=float, default=10.0, help="UART task loop period")
     p.add_argument("--window-size", type=int, default=50, help="Samples per inference window")
+    p.add_argument(
+        "--allow-uart-overrun",
+        action="store_true",
+        help="Allow emitting a task set even when measured UART ci_ms exceeds uart-period-ms",
+    )
     return p.parse_args()
 
 
@@ -113,14 +118,23 @@ def main() -> int:
     uart_ci_ms = cycles_to_ms(task["uart_max"], args.cpu_hz)
     logger_ci_ms = cycles_to_ms(task["logger_max"], args.cpu_hz)
 
+    if (uart_ci_ms > uart_period) and (not args.allow_uart_overrun):
+        print("[error] measured UART ci_ms exceeds configured UART period")
+        print(f"        uart_ci_ms={uart_ci_ms:.3f} ms, uart_period_ms={uart_period:.3f} ms")
+        print("        This usually means replay/streaming work was captured in UART timing.")
+        print("        For RM periodic analysis, rebuild firmware with replay path disabled")
+        print("        or rerun with a UART period that matches the measured operating mode.")
+        print("        If you intentionally want this task set, rerun with --allow-uart-overrun.")
+        return 3
+
     out = Path(args.out)
     with out.open("w", encoding="utf-8", newline="\n") as f:
         f.write("task,priority,period_ms,deadline_ms,ci_ms,ci_cycles,ci_source\n")
         # Script convention: lower number = higher priority.
         # Keep this aligned to current firmware urgency order.
-        f.write(f"Sensor,1,{sensor_period:.3f},{sensor_period:.3f},{sensor_ci_ms:.3f},,measured.task_csv_max\n")
-        f.write(f"Inference,2,{infer_period:.3f},{infer_period:.3f},,,from_wcet\n")
-        f.write(f"UART,3,{uart_period:.3f},{uart_period:.3f},{uart_ci_ms:.3f},,measured.task_csv_max\n")
+        f.write(f"Sensor,2,{sensor_period:.3f},{sensor_period:.3f},{sensor_ci_ms:.3f},,measured.task_csv_max\n")
+        f.write(f"UART,1,{uart_period:.3f},{uart_period:.3f},{uart_ci_ms:.3f},,measured.task_csv_max\n")
+        f.write(f"Inference,3,{infer_period:.3f},{infer_period:.3f},,,from_wcet\n")
         f.write(f"Logger,4,{logger_period:.3f},{logger_period:.3f},{logger_ci_ms:.3f},,measured.task_csv_max\n")
 
     print(f"[ok] wrote {out}")

@@ -7,6 +7,9 @@
 - Inference task release period is approximately:
   - T_infer = WINDOW_SIZE * SAMPLE_PERIOD_MS = 50 * 20 ms = 1000 ms.
 - WCET timing source is DWT cycle counter around inference compute block.
+- For production RM campaigns, build firmware with UART replay injection disabled
+  and UART heartbeat logging disabled so UART C_i reflects periodic service work
+  rather than host-stream replay bursts or infrequent long UART prints.
 
 ## 2) What the firmware now reports
 
@@ -106,3 +109,7 @@ If `Inference` row omits `ci_ms` and `ci_cycles`, the tool injects C_i from WCET
 python analysis/build_task_set_from_log.py --log wcet_run1.log --out task_set_measured.csv
 python analysis/wcet_rm_report.py --log wcet_run1.log --task-csv task_set_measured.csv --ci bound
 ```
+
+If the builder reports `UART ci_ms exceeds uart period`, your log likely captured
+replay/streaming behavior. For strict periodic RM modeling, disable replay and rerun.
+Use `--allow-uart-overrun` only when intentionally modeling that heavier mode.

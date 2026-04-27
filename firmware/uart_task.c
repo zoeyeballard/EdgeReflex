@@ -37,6 +37,8 @@
 #include "priorities.h"
 
 #define UART_TASK_STACK     256
+#define UART_REPLAY_ENABLE  0   // 0: production/RM runs, 1: host replay injection mode
+#define UART_HEARTBEAT_ENABLE 0 // 0: clean RM timing, 1: periodic liveness print every 5 s
 
 #define DWT_CYCCNT  (*((volatile uint32_t *)0xE0001004))
 #define DWT_SNAPSHOT()  (DWT_CYCCNT)
@@ -70,12 +72,14 @@ static void UARTTimingRecord(uint32_t cycles)
     taskEXIT_CRITICAL();
 }
 
+#if UART_REPLAY_ENABLE
 #define REPLAY_START0   0xAA
 #define REPLAY_START1   0x55
 #define REPLAY_END      0xBB
 #define REPLAY_HEADER   4                                   // 2 start + 2 idx
 #define REPLAY_PAYLOAD  (WINDOW_SIZE * SENSOR_AXES * 2)    // 600 bytes
 #define REPLAY_FRAME    (REPLAY_HEADER + REPLAY_PAYLOAD + 1 + 1) // 606 bytes
+#endif
 
 extern SemaphoreHandle_t g_pUARTSemaphore;
 
@@ -84,6 +88,7 @@ extern SemaphoreHandle_t g_pUARTSemaphore;
 // UARTStdioConfig takes over UART0 for printf but the underlying RX FIFO
 // is still readable directly. Blocks in 1 ms slices to stay RTOS-friendly.
 //*****************************************************************************
+#if UART_REPLAY_ENABLE
 static uint8_t read_byte(void)
 {
     while (UARTCharsAvail(UART0_BASE) == false)
@@ -146,24 +151,33 @@ static bool try_parse_replay_frame(SensorWindow_t *pWindow)
 
     return true;
 }
+#endif
 
 //*****************************************************************************
 // UARTTask
 //*****************************************************************************
 static void UARTTask(void *pvParameters)
 {
-    SensorWindow_t  replay_window;
+#if UART_REPLAY_ENABLE || UART_HEARTBEAT_ENABLE
     uint32_t        replay_count = 0;
+#endif
+#if UART_HEARTBEAT_ENABLE
     uint32_t        heartbeat_count = 0;
+    TickType_t      xLastHeartbeat = xTaskGetTickCount();
+#endif
+#if UART_REPLAY_ENABLE
+    SensorWindow_t  replay_window;
+#endif
     uint32_t        t0;
     uint32_t        t1;
-    TickType_t      xLastHeartbeat = xTaskGetTickCount();
 
     while (1)
     {
+        vTaskDelay(pdMS_TO_TICKS(10));  // yield; 10 ms RX poll granularity
         t0 = DWT_SNAPSHOT();
 
-        // --- Heartbeat every 5 seconds ---
+        // --- Optional heartbeat every 5 seconds ---
+    #if UART_HEARTBEAT_ENABLE
         if ((xTaskGetTickCount() - xLastHeartbeat) >= pdMS_TO_TICKS(5000))
         {
             xLastHeartbeat = xTaskGetTickCount();
@@ -172,8 +186,10 @@ static void UARTTask(void *pvParameters)
                        heartbeat_count++, replay_count);
             xSemaphoreGive(g_pUARTSemaphore);
         }
+    #endif
 
-        // --- Non-blocking RX poll for replay frames ---
+        // --- Optional replay path (disabled for production WCET/RM campaigns) ---
+    #if UART_REPLAY_ENABLE
         if (UARTCharsAvail(UART0_BASE))
         {
             uint8_t b = (uint8_t)UARTCharGetNonBlocking(UART0_BASE);
@@ -205,11 +221,10 @@ static void UARTTask(void *pvParameters)
                 }
             }
         }
+#endif
 
         t1 = DWT_SNAPSHOT();
         UARTTimingRecord(t1 - t0);
-
-        vTaskDelay(pdMS_TO_TICKS(10));  // yield; 10 ms RX poll granularity
     }
 }
 

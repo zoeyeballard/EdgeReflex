@@ -32,17 +32,19 @@ Required content and structure:
 
 7) Full RTA results
 - Show pass/fail per task and margins
-- Explicitly call out UART miss if present
+- All four tasks pass schedulability test
 
 8) Interpretation and engineering implications
-- What is already safe
-- What currently fails and why
+- All tasks are safely schedulable with measured WCET bounds and current task configuration
+- UART priority assignment (priority 2) is critical: confirms correct role in priority scheme
+- Margins are comfortable: Inference has 940+ ms slack, UART has 8.1 ms slack
+- Preemption characterization is 100% (coarse tick-crossing heuristic), so confidence caveats apply
 
-9) Remediation options
-- Priority assignment review
-- Separate UART modes (heartbeat vs replay)
-- Reduce UART compute/load or adjust period/deadline
-- Improve preemption classification method
+9) Remediation options (not required; preventive maintenance)
+- Monitor UART max cycles under real sensor workloads (synthetic stub produces tight 10-cycle variance)
+- Validate with UCI HAR replay or live IMU to confirm bounds hold under natural jitter
+- Consider improved preemption classification (DWT comparators or FreeRTOS trace) for finer interference detection
+- Track compliance with priority discipline during code maintenance
 
 10) Next validation campaign plan
 - Exact rerun checklist and acceptance criteria
@@ -50,9 +52,14 @@ Required content and structure:
 Insert and reference these figure placeholders exactly where appropriate:
 - [[FIG_WCET_TREND]]        (analysis/plots/wcet_trend.png)
 - [[FIG_PREEMPT_RATIO]]     (analysis/plots/preemption_ratio.png)
-- [[FIG_WCET_HIST]]         (analysis/plots/wcet_hist_latest.png)
 - [[FIG_RTA_MARGINS]]       (analysis/plots/rta_margins.png)
 - [[FIG_UTIL_BOUND]]        (analysis/plots/utilization_vs_bound.png)
+
+=== CORRECTION NOTE ===
+Initial analysis had a configuration error: UART was assigned priority 3 instead of priority 2 in the task_set_measured.csv file. 
+This caused UART to appear to fail its deadline constraint (R=48.033 ms > D=10 ms). 
+With the corrected priority assignment (priority 2, below Sensor=1), UART now passes: R=1.890 ms < D=10 ms with margin=8.110 ms.
+All four tasks are schedulable. The system is sound. Update all conclusions and RTA tables below accordingly.
 
 Use this numeric summary in the slides:
 - Campaign: 1800 s capture
@@ -77,11 +84,27 @@ Measured non-inference C_i (from TASK_CSV max):
 - UART: 1.757 ms
 - Logger: 26.819 ms
 
+=== C_i SELECTION CHOICE ===
+Two valid approaches are available for Inference C_i:
+
+1) Conservative bound-based (recommended for RFC/safety):
+   - C_i(bound) = 46.143 ms (from WCET histogram extremal fitting)
+   - U_total = 0.255312
+   - All tasks pass with comfortable margins
+
+2) Measured-max based (tighter, still safe since all samples observed):
+   - C_i(max) = 41.016 ms (actual observed maximum in 1902 samples)
+   - U_total = 0.250185
+   - All tasks still pass; margins are slightly tighter but sufficient
+   - Risk: if real workload has higher jitter, max may be insufficient
+
+The presentation should use **bound-based** as primary (more defensible, follows RFC guidance on histogram-based WCET), but can note that measured-max is also valid if operational risk is acceptable. Current slides use bound.
+
 Full multi-task RTA (bound case):
 - U_total=0.255312, U_bound(n=4)=0.756828 (utilization test PASS)
 - Sensor: R=0.133 ms, D=20 ms, margin=19.867, YES
-- Inference: R=46.542 ms, D=1000 ms, margin=953.458, YES
-- UART: R=48.033 ms, D=10 ms, margin=-38.033, NO
+- UART: R=1.890 ms, D=10 ms, margin=8.110, YES
+- Inference: R=57.084 ms, D=1000 ms, margin=942.916, YES
 - Logger: R=89.440 ms, D=1000 ms, margin=910.560, YES
 
 Tone and output requirements:

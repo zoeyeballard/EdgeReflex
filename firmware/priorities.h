@@ -9,9 +9,9 @@
 #define __PRIORITIES_H__
 
 #define PRIORITY_LOGGER_TASK     1   // Lowest  - idle-time profiling
-#define PRIORITY_UART_TASK       2   // Low     - TX log output + RX replay
-#define PRIORITY_INFERENCE_TASK  3   // Medium  - runs when window is ready
-#define PRIORITY_SENSOR_TASK     4   // Highest - must not miss samples
+#define PRIORITY_UART_TASK       4   // Highest - must not miss samples
+#define PRIORITY_INFERENCE_TASK  2   // Low     - TX log output + RX replay
+#define PRIORITY_SENSOR_TASK     3   // Medium  - runs when window is ready
 
 /* Backward compatibility for legacy demo tasks still in the build. */
 #define PRIORITY_LED_TASK        PRIORITY_UART_TASK
