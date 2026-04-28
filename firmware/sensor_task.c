@@ -74,25 +74,25 @@ static void SensorTask(void *pvParameters)
     uint32_t        t1;
     TickType_t      xLastWake = xTaskGetTickCount();
 
-    // --- SMOKE TEST: remove after confirming IMU reads work ---
-    {
-        int16_t ax, ay, az, gx, gy, gz;
-        uint8_t i;
-        for (i = 0; i < 5; i++)
-        {
-            if (MPU6050_ReadSample(&ax, &ay, &az, &gx, &gy, &gz))
-            {
-                UARTprintf("[SENSOR] Sample %u: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d\n",
-                           i, ax, ay, az, gx, gy, gz);
-            }
-            else
-            {
-                UARTprintf("[SENSOR] Sample %u: READ FAILED\n", i);
-            }
-            vTaskDelay(pdMS_TO_TICKS(20));
-        }
-    }
-    // --- END SMOKE TEST ---
+    // // --- SMOKE TEST: remove after confirming IMU reads work ---
+    // {
+    //     int16_t ax, ay, az, gx, gy, gz;
+    //     uint8_t i;
+    //     for (i = 0; i < 5; i++)
+    //     {
+    //         if (MPU6050_ReadSample(&ax, &ay, &az, &gx, &gy, &gz))
+    //         {
+    //             UARTprintf("[SENSOR] Sample %u: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d\n",
+    //                        i, ax, ay, az, gx, gy, gz);
+    //         }
+    //         else
+    //         {
+    //             UARTprintf("[SENSOR] Sample %u: READ FAILED\n", i);
+    //         }
+    //         vTaskDelay(pdMS_TO_TICKS(20));
+    //     }
+    // }
+    // // --- END SMOKE TEST ---
 
     while (1)
     {

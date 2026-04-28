@@ -88,6 +88,27 @@ static bool I2C_ReadBurst(uint8_t reg, uint8_t *buf, uint8_t len)
     return true;
 }
 
+// Temporary I2C scanner — paste into mpu6050.c, call at top of MPU6050_Init()
+// Remove after diagnosis
+static void I2C_Scan(void)
+{
+    uint8_t addr;
+    uint8_t dummy;
+    UARTprintf("[I2C SCAN] Scanning addresses 0x08 to 0x77...\n");
+    for (addr = 0x08; addr <= 0x77; addr++)
+    {
+        I2CMasterSlaveAddrSet(MPU6050_I2C_BASE, addr, true);
+        I2CMasterControl(MPU6050_I2C_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE);
+        while (I2CMasterBusy(MPU6050_I2C_BASE));
+        if (I2CMasterErr(MPU6050_I2C_BASE) == I2C_MASTER_ERR_NONE)
+        {
+            dummy = (uint8_t)I2CMasterDataGet(MPU6050_I2C_BASE);
+            UARTprintf("[I2C SCAN] Device found at 0x%02X\n", addr);
+        }
+    }
+    UARTprintf("[I2C SCAN] Done.\n");
+}
+
 //*****************************************************************************
 // MPU6050_Init
 //*****************************************************************************
@@ -110,6 +131,10 @@ bool MPU6050_Init(void)
     // Initialize I2C master at 400 kHz (fast mode)
     I2CMasterInitExpClk(MPU6050_I2C_BASE, SysCtlClockGet(), true);
 
+    // --- TEMPORARY DIAGNOSTIC: remove after finding the device ---
+    I2C_Scan();
+    // --- END DIAGNOSTIC ---
+
     // Wake the MPU-6050 (clear sleep bit, select PLL clock)
     if (!I2C_WriteReg(MPU6050_REG_PWR_MGMT_1, MPU6050_CLK_PLL_XGYRO))
     {
@@ -121,11 +146,17 @@ bool MPU6050_Init(void)
     SysCtlDelay(SysCtlClockGet() / 100);    // ~10 ms at 80 MHz
 
     // Verify WHO_AM_I register
-    if (!I2C_ReadBurst(MPU6050_REG_WHO_AM_I, &whoami, 1) || whoami != 0x68)
+    if (!I2C_ReadBurst(MPU6050_REG_WHO_AM_I, &whoami, 1))
     {
-        UARTprintf("[MPU6050] Init failed: WHO_AM_I=0x%02X (expected 0x68)\n", whoami);
+        UARTprintf("[MPU6050] Init failed: WHO_AM_I read error\n");
         return false;
     }
+    if (whoami != 0x68 && whoami != 0x70 && whoami != 0x72)
+    {
+        UARTprintf("[MPU6050] Init failed: WHO_AM_I=0x%02X (unrecognized)\n", whoami);
+        return false;
+    }
+    UARTprintf("[MPU6050] WHO_AM_I=0x%02X (clone chip detected, proceeding)\n", whoami);
 
     // Configure sample rate divider: 1 kHz / (1 + 19) = 50 Hz
     // This matches SAMPLE_PERIOD_MS = 20 in sensor_task.c
@@ -140,7 +171,7 @@ bool MPU6050_Init(void)
     // Accel full scale: ±2 g
     if (!I2C_WriteReg(MPU6050_REG_ACCEL_CONFIG, MPU6050_ACCEL_FS_2G)) return false;
 
-    UARTprintf("[MPU6050] Init OK — 50 Hz, ±2g, ±250dps, DLPF 44 Hz\n");
+    UARTprintf("[MPU6050] Init OK - 50 Hz, +/-2g, +/-250dps, DLPF 44 Hz\n");
     return true;
 }
 
