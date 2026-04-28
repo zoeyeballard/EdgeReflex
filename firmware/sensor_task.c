@@ -17,6 +17,7 @@
 #include "semphr.h"
 
 #include "sensor_task.h"
+#include "mpu6050.h"  
 #include "priorities.h"
 
 #define SENSOR_TASK_STACK   256         // words
@@ -73,18 +74,61 @@ static void SensorTask(void *pvParameters)
     uint32_t        t1;
     TickType_t      xLastWake = xTaskGetTickCount();
 
+    // --- SMOKE TEST: remove after confirming IMU reads work ---
+    {
+        int16_t ax, ay, az, gx, gy, gz;
+        uint8_t i;
+        for (i = 0; i < 5; i++)
+        {
+            if (MPU6050_ReadSample(&ax, &ay, &az, &gx, &gy, &gz))
+            {
+                UARTprintf("[SENSOR] Sample %u: ax=%d ay=%d az=%d gx=%d gy=%d gz=%d\n",
+                           i, ax, ay, az, gx, gy, gz);
+            }
+            else
+            {
+                UARTprintf("[SENSOR] Sample %u: READ FAILED\n", i);
+            }
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+    }
+    // --- END SMOKE TEST ---
+
     while (1)
     {
         t0 = DWT_SNAPSHOT();
 
-        // --- STUB: replace with real IMU read over SPI/I2C ---
-        window.data[sample_idx][0] = (int16_t)(sample_idx * 10);   // ax
-        window.data[sample_idx][1] = (int16_t)(sample_idx * 11);   // ay
-        window.data[sample_idx][2] = (int16_t)(sample_idx * 12);   // az
-        window.data[sample_idx][3] = (int16_t)(sample_idx * 13);   // gx
-        window.data[sample_idx][4] = (int16_t)(sample_idx * 14);   // gy
-        window.data[sample_idx][5] = (int16_t)(sample_idx * 15);   // gz
-        // --- END STUB ---
+        // --- REAL IMU READ ---
+        {
+            int16_t ax, ay, az, gx, gy, gz;
+            bool ok = MPU6050_ReadSample(&ax, &ay, &az, &gx, &gy, &gz);
+
+            if (ok)
+            {
+                window.data[sample_idx][0] = ax;
+                window.data[sample_idx][1] = ay;
+                window.data[sample_idx][2] = az;
+                window.data[sample_idx][3] = gx;
+                window.data[sample_idx][4] = gy;
+                window.data[sample_idx][5] = gz;
+            }
+            else
+            {
+                // I2C read failed — zero this sample and log once
+                window.data[sample_idx][0] = 0;
+                window.data[sample_idx][1] = 0;
+                window.data[sample_idx][2] = 0;
+                window.data[sample_idx][3] = 0;
+                window.data[sample_idx][4] = 0;
+                window.data[sample_idx][5] = 0;
+
+                xSemaphoreTake(g_pUARTSemaphore, portMAX_DELAY);
+                UARTprintf("[SENSOR] WARNING: IMU read failed at sample %u\n",
+                           sample_idx);
+                xSemaphoreGive(g_pUARTSemaphore);
+            }
+        }
+        // --- END REAL IMU READ ---
 
         sample_idx++;
 
@@ -128,6 +172,13 @@ uint32_t SensorTaskInit(void)
     g_xSensorQueue = xQueueCreate(SENSOR_QUEUE_DEPTH, sizeof(SensorWindow_t));
     if (g_xSensorQueue == NULL)
     {
+        return 1;
+    }
+
+    // Initialize the physical IMU before the task starts
+    if (!MPU6050_Init())
+    {
+        UARTprintf("[SENSOR] FATAL: MPU6050 init failed. Check wiring on PB2/PB3.\n");
         return 1;
     }
 
