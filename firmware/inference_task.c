@@ -18,12 +18,14 @@
 #include "semphr.h"
 
 #include "sensor_task.h"
+#include "agent_state.h"
 #include "inference_task.h"
 #include "priorities.h"
 #include "har_model.h"
 
 #define INFERENCE_USE_HAR_MODEL      1
 #define INFERENCE_LOG_EACH_WINDOW    0
+#define INFERENCE_PERIOD_MS         100U
 #define WCET_WARMUP_SAMPLES          8U
 #define WCET_RING_SIZE               256U
 #define WCET_HIST_BINS               64U
@@ -165,11 +167,66 @@ static const char * const CLASS_NAMES[] = {
     "UNKNOWN", "WALKING", "RUNNING", "SITTING", "STANDING"
 };
 
+static AgentState_t g_sAgentState = {
+    {0, 0, 0, 0},
+    0U,
+    0UL,
+    0UL
+};
+
 /*
  * Keep model input in static storage so inference timing does not consume
  * an additional HAR_INPUT_DIM floats on task stack.
  */
 static float g_fHarInput[HAR_INPUT_DIM];
+
+static void BuildHarInput(const SensorWindow_t *pWindow)
+{
+    uint32_t i;
+    uint32_t j;
+    uint32_t k = 0U;
+
+    for (i = 0U; i < WINDOW_SIZE && k < HAR_INPUT_DIM; i++)
+    {
+        for (j = 0U; j < SENSOR_AXES && k < HAR_INPUT_DIM; j++)
+        {
+            g_fHarInput[k++] = (float)pWindow->data[i][j];
+        }
+    }
+
+    for (i = 0U; i < NUM_CLASSES && k < HAR_INPUT_DIM; i++)
+    {
+        g_fHarInput[k++] = (float)g_sAgentState.prev_probs[i];
+    }
+
+    while (k < HAR_INPUT_DIM)
+    {
+        g_fHarInput[k++] = 0.0f;
+    }
+}
+
+static void AgentStateUpdate(HarClass_t cls, uint32_t timestamp_ms)
+{
+    uint32_t i;
+    uint32_t class_idx = 0U;
+    uint8_t confidence = 0U;
+
+    for (i = 0U; i < NUM_CLASSES; i++)
+    {
+        g_sAgentState.prev_probs[i] = 0;
+    }
+
+    if ((cls >= HAR_CLASS_WALKING) && (cls <= HAR_CLASS_STANDING))
+    {
+        class_idx = (uint32_t)(cls - HAR_CLASS_WALKING);
+        g_sAgentState.prev_probs[class_idx] = 100;
+        confidence = 100U;
+    }
+
+    g_sAgentState.confidence = confidence;
+    g_sAgentState.step++;
+    g_sAgentState.last_update_ms = timestamp_ms;
+}
 
 //*****************************************************************************
 // run_inference_stub - replace with your real model call.
@@ -184,22 +241,9 @@ static HarClass_t run_inference_stub(const SensorWindow_t *pWindow)
 
 static HarClass_t RunHarInference(const SensorWindow_t *pWindow)
 {
-    uint32_t i;
-    uint32_t j;
-    uint32_t k = 0U;
     int label;
 
-    for (i = 0U; i < WINDOW_SIZE && k < HAR_INPUT_DIM; i++)
-    {
-        for (j = 0U; j < SENSOR_AXES && k < HAR_INPUT_DIM; j++)
-        {
-            g_fHarInput[k++] = (float)pWindow->data[i][j];
-        }
-    }
-    while (k < HAR_INPUT_DIM)
-    {
-        g_fHarInput[k++] = 0.0f;
-    }
+    BuildHarInput(pWindow);
 
     label = har_infer(g_fHarInput);
 
@@ -239,6 +283,7 @@ static void InferenceTask(void *pvParameters)
         #else
         g_eLastClass = run_inference_stub(&window);
         #endif
+        AgentStateUpdate(g_eLastClass, window.timestamp_ms);
         t1 = DWT_SNAPSHOT();
         tick_after = xTaskGetTickCount();
         // --- End timed block ---
