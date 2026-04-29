@@ -1,0 +1,89 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{url}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{Measured Rate Monotonic Schedulability of a FreeRTOS Human Activity Recognition Pipeline on Cortex-M4F}
+
+\author{Anonymous Author\thanks{Prepared as an RTOS class paper draft from the EdgeReflex project workspace.}}
+
+\markboth{IEEE Journal Draft}{Anonymous Author: FreeRTOS Human Activity Recognition}
+
+\maketitle
+
+\begin{abstract}
+This paper presents an embedded human activity recognition workload running on a Cortex-M4F under FreeRTOS and characterizes it with direct cycle-counted worst-case execution time measurements and Rate Monotonic schedulability analysis. The current firmware uses a 50-sample IMU window, a 20 ms sensor period, and a 1 s inference period. From a real UART capture, the inference block exhibits a mean of 2,030,467 cycles, a maximum of 2,030,955 cycles, and a conservative bound of 2,284,824 cycles at 50 MHz. Using that bound together with measured task costs for sensor, UART, and logger work, the full task set remains schedulable with 10.33\% total utilization and response times well below all deadlines. The present contribution is therefore an end-to-end RTOS measurement and analysis workflow grounded in real traces rather than a hardware acceleration result. FPGA offload is best treated as a future scalability extension rather than the core claim of the current paper.
+\end{abstract}
+
+\begin{IEEEkeywords}
+FreeRTOS, rate monotonic scheduling, worst-case execution time, real-time systems, embedded machine learning, human activity recognition
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{E}{mbedded} machine-learning systems are often judged by model accuracy, but in an RTOS setting the more immediate question is whether the workload can meet fixed deadlines under a preemptive scheduler. This project uses a human activity recognition (HAR) pipeline on a TM4C123G Cortex-M4F board to answer that question with measured timing data instead of assumptions. The code path is intentionally small enough to study end to end: IMU sampling, window accumulation, inference, UART logging, and a FreeRTOS schedule.
+
+The present draft is deliberately scoped as an RTOS paper. The main result is not a new scheduling theorem; it is a measured workflow that turns firmware traces into WCET candidates and then into RM/RTA conclusions. That makes the work useful in two ways. First, it gives a concrete example of how to characterize a real embedded ML task set. Second, it exposes the point at which the current workload remains comfortably schedulable, which is itself a meaningful baseline for later scaling experiments.
+
+The current repository supports three analysis stages. First, the firmware emits \texttt{WCET\_CSV} and \texttt{TASK\_CSV} trace lines from real runs. Second, the Python tools extract conservative execution-time estimates and generate task sets. Third, response-time analysis computes feasibility under fixed priorities. The key finding from the current run is that the system is schedulable with margin: using the conservative inference bound, total utilization is 10.33\%, and all tasks meet deadlines \cite{liu1973}.
+
+\section{System Overview}
+The hardware platform is a TM4C123G Cortex-M4F microcontroller running FreeRTOS. The application reads IMU data in 20 ms sensor periods and forms a 50-sample window for inference, which yields a 1000 ms inference period. The inference path is a small MLP trained offline on the UCI HAR dataset and deployed as firmware code \cite{anguita2013}. Timing is instrumented with the ARM DWT cycle counter around the inference block, and the logger emits periodic CSV snapshots over UART \cite{freertos}.
+
+The current timing snapshot from \texttt{analysis/real\_imu\_run1.log} contains 1,862 samples after warmup discard. All samples in the captured run were preempted, so the analysis conservatively uses the bound column rather than claiming a pure non-preempted WCET. The measured inference statistics are summarized in Table~\ref{tab:taskset}.
+
+\section{Methodology}
+Let $C_i$ and $T_i$ denote the execution time and period of task $i$. The total utilization is
+\begin{equation}
+U = \sum_i \frac{C_i}{T_i}.
+\end{equation}
+For fixed-priority Rate Monotonic scheduling, schedulability is checked with response-time analysis:
+\begin{equation}
+R_i^{(k+1)} = C_i + \sum_{j \in hp(i)} \left\lceil \frac{R_i^{(k)}}{T_j} \right\rceil C_j,
+\end{equation}
+where $hp(i)$ is the set of tasks with higher priority than task $i$. The task is schedulable if the fixed point converges with $R_i \le D_i$.
+
+In this project, the priority order follows the measured periods: UART at 10 ms, Sensor at 20 ms, and Inference plus Logger at 1000 ms, with the logger placed lowest among the equal-period tasks. The inference cost uses the conservative bound from the WCET trace because no unpreempted sample was observed in the current run.
+
+\section{Results}
+Table~\ref{tab:taskset} summarizes the current task set. The UART work is negligible, the sensor task is small, and the logger dominates the non-inference background work. Even so, the system remains comfortably schedulable.
+
+\begin{table}[!t]
+\caption{Measured task set and RTA result from the current run.}
+\label{tab:taskset}
+\centering
+\begin{tabular}{lrrrrr}
+\hline
+Task & $T_i$ (ms) & $C_i$ (cycles) & $C_i$ (ms) & $R_i$ (ms) & Status \\
+\hline
+UART & 10 & 4 & 0.00008 & 0.00008 & Pass \\
+Sensor & 20 & 32,071 & 0.64142 & 0.64150 & Pass \\
+Inference & 1000 & 2,284,824 & 45.69648 & 47.62114 & Pass \\
+Logger & 1000 & 1,277,880 & 25.55760 & 73.82040 & Pass \\
+\hline
+\end{tabular}
+\end{table}
+
+The inference trace itself is stable across the run: mean 2,030,467 cycles, max 2,030,955 cycles, and p99 2,031,615 cycles. The conservative bound of 2,284,824 cycles corresponds to 45.7 ms at 50 MHz. Using that bound, the total task-set utilization is 10.33\%, and the response-time analysis confirms that every task meets its deadline.
+
+\section{Discussion}
+The current work is useful RTOS research because it is grounded in a real embedded workload, real timing traces, and an actual fixed-priority schedule. It is not just a synthetic benchmark. At the same time, the current operating point is still low utilization, so the paper should not overclaim that FPGA acceleration is required.
+
+For the present class project, FPGA is best described as a possible scaling path. It becomes a stronger research contribution only if it demonstrates a threshold effect, such as higher inference frequency or a larger model pushing software execution toward unschedulability and offload restoring feasibility. Without that threshold, FPGA would widen the topic away from RTOS and into hardware acceleration, which is not the best fit for the current evidence base.
+
+In other words, the strongest paper right now is an RTOS paper with a clear measurement pipeline and a schedulable embedded ML workload. FPGA should remain a secondary discussion unless additional experiments make it the mechanism that changes schedulability.
+
+\section{Conclusion}
+This draft shows that the current EdgeReflex work is already a valid RTOS research artifact: it instruments a real firmware stack, derives execution-time statistics from traces, and verifies RM schedulability on a measured task set. The evidence supports a baseline contribution with moderate novelty and practical value. The work becomes substantially stronger only when future experiments create a real load-pressure story, at which point FPGA offload can be introduced as the remedy rather than the main topic.
+
+\section*{Acknowledgment}
+This paper draft was assembled from the current repository state and the measured \texttt{real\_imu\_run1.log} capture.
+
+\bibliographystyle{IEEEtran}
+\bibliography{bibtex/bib/EdgeReflexRefs}
+
+\end{document}
