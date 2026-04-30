@@ -102,12 +102,11 @@ def build_default_inference_task(
     wcet: Dict[str, int],
     ci_mode: str,
     cpu_hz: float,
-    sample_period_ms: float,
-    window_size: int,
+    infer_period_ms: float,
 ) -> Task:
     ci_cycles = choose_ci_cycles(wcet, ci_mode)
     ci_ms = cycles_to_ms(ci_cycles, cpu_hz)
-    period_ms = sample_period_ms * float(window_size)
+    period_ms = infer_period_ms
     return Task(
         task="Inference",
         priority=1,
@@ -277,10 +276,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cpu-hz", type=float, default=50_000_000.0, help="CPU clock in Hz")
     p.add_argument("--ci", choices=["max", "bound", "p99", "max_unpreempted"], default="bound",
                    help="Inference C_i source for RM when inferred from WCET")
-    p.add_argument("--sample-period-ms", type=float, default=20.0,
-                   help="Sensor sample period used to derive inference period")
-    p.add_argument("--window-size", type=int, default=50,
-                   help="Samples per inference window")
+    p.add_argument("--infer-period-ms", type=float, default=100.0,
+                   help="Default inference period used when no task CSV is provided")
     p.add_argument("--task-csv", default="", help="Optional task-set CSV for full RTA")
     return p.parse_args()
 
@@ -313,8 +310,7 @@ def main() -> int:
                 wcet,
                 args.ci,
                 args.cpu_hz,
-                args.sample_period_ms,
-                args.window_size,
+                args.infer_period_ms,
             )
         ]
 

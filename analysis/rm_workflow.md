@@ -5,7 +5,7 @@
 - CPU clock fixed at 50 MHz.
 - FreeRTOS preemptive scheduler, tick = 1 kHz.
 - Inference task release period is approximately:
-  - T_infer = WINDOW_SIZE * SAMPLE_PERIOD_MS = 50 * 20 ms = 1000 ms.
+  - T_infer = 100 ms in the current firmware configuration.
 - WCET timing source is DWT cycle counter around inference compute block.
 - For production RM campaigns, build firmware with UART replay injection disabled
   and UART heartbeat logging disabled so UART C_i reflects periodic service work
@@ -90,7 +90,7 @@ python analysis/wcet_rm_report.py --log wcet_run1.log --cpu-hz 50000000 --ci bou
 ```csv
 task,priority,period_ms,deadline_ms,ci_ms,ci_cycles,ci_source
 Sensor,1,20,20,0.200,,scope
-Inference,2,1000,1000,,,from_wcet
+  Inference,2,100,100,,,from_wcet
 UART,3,10,10,0.080,,scope
 Logger,4,1000,1000,0.300,,scope
 ```

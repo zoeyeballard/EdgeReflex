@@ -4,6 +4,9 @@ Build a task-set CSV from captured WCET_CSV and TASK_CSV lines.
 
 Usage:
   python build_task_set_from_log.py --log wcet_run1.log --out task_set_measured.csv
+
+The inference period is modeled explicitly with --infer-period-ms.
+Default: 100 ms.
 """
 
 import argparse
@@ -78,10 +81,15 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Build measured task_set CSV from UART log")
     p.add_argument("--log", required=True, help="UART log file")
     p.add_argument("--out", default="task_set_measured.csv", help="Output CSV path")
-    p.add_argument("--cpu-hz", type=float, default=50_000_000.0, help="CPU clock in Hz")
+    p.add_argument("--cpu-hz", type=float, default=80_000_000.0, help="CPU clock in Hz")
     p.add_argument("--sensor-period-ms", type=float, default=20.0, help="Sensor task period")
     p.add_argument("--uart-period-ms", type=float, default=10.0, help="UART task loop period")
-    p.add_argument("--window-size", type=int, default=50, help="Samples per inference window")
+    p.add_argument(
+        "--infer-period-ms",
+        type=float,
+        default=100.0,
+        help="Inference task period to write into the task set",
+    )
     p.add_argument(
         "--allow-uart-overrun",
         action="store_true",
@@ -111,7 +119,7 @@ def main() -> int:
 
     sensor_period = args.sensor_period_ms
     uart_period = args.uart_period_ms
-    infer_period = args.sensor_period_ms * float(args.window_size)
+    infer_period = args.infer_period_ms
     logger_period = infer_period
 
     sensor_ci_ms = cycles_to_ms(task["sensor_max"], args.cpu_hz)
@@ -142,6 +150,7 @@ def main() -> int:
     print(f"  Sensor: {sensor_ci_ms:.3f} ms")
     print(f"  UART  : {uart_ci_ms:.3f} ms")
     print(f"  Logger: {logger_ci_ms:.3f} ms")
+    print(f"[summary] inference period written to task set: {infer_period:.3f} ms")
     print("[next] run:")
     print(f"  python wcet_rm_report.py --log {log_path} --task-csv {out} --ci bound")
 
