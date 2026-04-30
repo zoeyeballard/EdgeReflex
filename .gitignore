@@ -1,6 +1,4 @@
-task_set_measured.csv
 wcet_run*.log
 wcet_console_run*.log
 real_imu_run*.log
 agent_software_run*.log
-imu_task_set_measured.csv
