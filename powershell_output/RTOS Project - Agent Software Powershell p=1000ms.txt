@@ -1,0 +1,176 @@
+﻿PS C:\personal\EdgeReflex\analysis> python capture_uart.py --port COM8 --baud 115200 --out agent_software_run1.log --duration-s 1800
+[capture] port=COM8 baud=115200 out=agent_software_run1.log
+[capture] duration=1800.0s
+[capture] done lines=540 elapsed_s=1800.2
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_software_run1.log --cpu-hz 50000000 --ci bound
+=== WCET Summary (last reported snapshot) ===
+count           : 1852
+warmup_discarded: 8
+min             :    2031335 cycles  (  40.627 ms)
+mean            :    2031392 cycles  (  40.628 ms)
+p99             :    2031615 cycles  (  40.632 ms)
+max             :    2031677 cycles  (  40.634 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :    2285636 cycles  (  45.713 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 0
+preempted       : 1852
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+
+=== Confidence Notes ===
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+Inference,1,1000.000,1000.000,45.713,0.045713,inference.bound
+
+
+=== Utilization Check ===
+U_total=0.045713
+U_bound(n=1)=1.000000
+util_test=PASS
+
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+Inference,1,45.713,1000.000,954.287,YES
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_software_run1.log --cpu-hz 50000000 --ci max_unpreempted
+=== WCET Summary (last reported snapshot) ===
+count           : 1852
+warmup_discarded: 8
+min             :    2031335 cycles  (  40.627 ms)
+mean            :    2031392 cycles  (  40.628 ms)
+p99             :    2031615 cycles  (  40.632 ms)
+max             :    2031677 cycles  (  40.634 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :    2285636 cycles  (  45.713 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 0
+preempted       : 1852
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+
+=== Confidence Notes ===
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+Inference,1,1000.000,1000.000,0.000,0.000000,inference.max_unpreempted
+
+
+=== Utilization Check ===
+U_total=0.000000
+U_bound(n=1)=1.000000
+util_test=PASS
+
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+Inference,1,0.000,1000.000,1000.000,YES
+PS C:\personal\EdgeReflex\analysis> python build_task_set_from_log.py --log agent_software_run1.log --out task_set_measured.csv
+[ok] wrote task_set_measured.csv
+[summary] derived ci_ms from TASK_CSV max cycles:
+  Sensor: 0.641 ms
+  UART  : 0.000 ms
+  Logger: 25.543 ms
+[next] run:
+  python wcet_rm_report.py --log agent_software_run1.log --task-csv task_set_measured.csv --ci bound
+PS C:\personal\EdgeReflex\analysis> python build_task_set_from_log.py --log agent_software_run1.log --out task_set_agent_software.csv
+[ok] wrote task_set_agent_software.csv
+[summary] derived ci_ms from TASK_CSV max cycles:
+  Sensor: 0.641 ms
+  UART  : 0.000 ms
+  Logger: 25.543 ms
+[next] run:
+  python wcet_rm_report.py --log agent_software_run1.log --task-csv task_set_agent_software.csv --ci bound
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_software_run1.log --task-csv task_set_agent_software.csv --ci bound
+=== WCET Summary (last reported snapshot) ===
+count           : 1852
+warmup_discarded: 8
+min             :    2031335 cycles  (  40.627 ms)
+mean            :    2031392 cycles  (  40.628 ms)
+p99             :    2031615 cycles  (  40.632 ms)
+max             :    2031677 cycles  (  40.634 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :    2285636 cycles  (  45.713 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 0
+preempted       : 1852
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+
+=== Confidence Notes ===
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+UART,1,10.000,10.000,0.000,0.000000,measured.task_csv_max
+Sensor,2,20.000,20.000,0.641,0.032050,measured.task_csv_max
+Inference,3,1000.000,1000.000,45.713,0.045713,inference.bound
+Logger,4,1000.000,1000.000,25.543,0.025543,measured.task_csv_max
+
+
+=== Utilization Check ===
+U_total=0.103306
+U_bound(n=4)=0.756828
+util_test=PASS
+
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+UART,1,0.000,10.000,10.000,YES
+Sensor,2,0.641,20.000,19.359,YES
+Inference,3,47.636,1000.000,952.364,YES
+Logger,4,73.820,1000.000,926.180,YES
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_software_run1.log --task-csv task_set_agent_software.csv --ci bound
+=== WCET Summary (last reported snapshot) ===
+count           : 1852
+warmup_discarded: 8
+min             :    2031335 cycles  (  40.627 ms)
+mean            :    2031392 cycles  (  40.628 ms)
+p99             :    2031615 cycles  (  40.632 ms)
+max             :    2031677 cycles  (  40.634 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :    2285636 cycles  (  45.713 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 0
+preempted       : 1852
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+
+=== Confidence Notes ===
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+UART,1,10.000,10.000,0.000,0.000000,measured.task_csv_max
+Sensor,2,20.000,20.000,0.641,0.032050,measured.task_csv_max
+Inference,3,1000.000,1000.000,45.713,0.045713,inference.bound
+Logger,4,1000.000,1000.000,25.543,0.025543,measured.task_csv_max
+
+
+=== Utilization Check ===
+U_total=0.103306
+U_bound(n=4)=0.756828
+util_test=PASS
+
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+UART,1,0.000,10.000,10.000,YES
+Sensor,2,0.641,20.000,19.359,YES
+Inference,3,47.636,1000.000,952.364,YES
+Logger,4,73.820,1000.000,926.180,YES
