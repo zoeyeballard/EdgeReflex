@@ -8,10 +8,11 @@
 #ifndef __PRIORITIES_H__
 #define __PRIORITIES_H__
 
-#define PRIORITY_LOGGER_TASK     1   // Lowest  - idle-time profiling
-#define PRIORITY_UART_TASK       4   // Highest - must not miss samples
-#define PRIORITY_INFERENCE_TASK  2   // Low     - TX log output + RX replay
-#define PRIORITY_SENSOR_TASK     3   // Medium  - runs when window is ready
+#define PRIORITY_FEEDBACK_TASK   1   // Lowest  - closed-loop feedback stub
+#define PRIORITY_LOGGER_TASK     2   // Low     - idle-time profiling
+#define PRIORITY_INFERENCE_TASK  3   // Medium  - inference + smoothing stage
+#define PRIORITY_SENSOR_TASK     4   // High    - runs when window is ready
+#define PRIORITY_UART_TASK       5   // Highest - must not miss samples
 
 /* Backward compatibility for legacy demo tasks still in the build. */
 #define PRIORITY_LED_TASK        PRIORITY_UART_TASK

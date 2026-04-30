@@ -61,6 +61,21 @@
 			<locationURI>SW_ROOT/examples/boards/ek-tm4c123gxl/freertos_demo/logger_task.c</locationURI>
 		</link>
 		<link>
+			<name>mpu6050.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/examples/boards/ek-tm4c123gxl/freertos_demo/mpu6050.c</locationURI>
+		</link>
+		<link>
+			<name>feedback_task.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/examples/boards/ek-tm4c123gxl/freertos_demo/feedback_task.c</locationURI>
+		</link>
+		<link>
+			<name>smoothing.c</name>
+			<type>1</type>
+			<locationURI>SW_ROOT/examples/boards/ek-tm4c123gxl/freertos_demo/smoothing.c</locationURI>
+		</link>
+		<link>
 			<name>startup_ccs.c</name>
 			<type>1</type>
 			<locationURI>SW_ROOT/examples/boards/ek-tm4c123gxl/freertos_demo/startup_ccs.c</locationURI>

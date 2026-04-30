@@ -49,6 +49,14 @@ TASK_KEYS = [
     "uptime_ms",
 ]
 
+TASK_ROW_KEYS = [
+    "task",
+    "priority",
+    "period_ms",
+    "deadline_ms",
+    "max_cycles",
+]
+
 
 def parse_last_tagged_line(log_path: Path, tag: str, keys: List[str]) -> Optional[Dict[str, int]]:
     last_values: Optional[List[int]] = None
@@ -75,6 +83,36 @@ def parse_last_tagged_line(log_path: Path, tag: str, keys: List[str]) -> Optiona
 
 def cycles_to_ms(cycles: int, cpu_hz: float) -> float:
     return (float(cycles) / cpu_hz) * 1000.0
+
+
+def parse_task_rows(log_path: Path) -> Dict[str, Dict[str, float]]:
+    rows: Dict[str, Dict[str, float]] = {}
+
+    with log_path.open("r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            if "TASK_CSV," not in line:
+                continue
+
+            idx = line.find("TASK_CSV,")
+            payload = line[idx:].strip()
+            parts = payload.split(",")
+
+            if len(parts) != 6:
+                continue
+            if parts[1].isdigit():
+                continue
+
+            try:
+                rows[parts[1]] = {
+                    "priority": float(parts[2]),
+                    "period_ms": float(parts[3]),
+                    "deadline_ms": float(parts[4]),
+                    "max_cycles": float(parts[5]),
+                }
+            except ValueError:
+                continue
+
+    return rows
 
 
 def parse_args() -> argparse.Namespace:
@@ -108,11 +146,12 @@ def main() -> int:
 
     wcet = parse_last_tagged_line(log_path, "WCET_CSV,", WCET_KEYS)
     task = parse_last_tagged_line(log_path, "TASK_CSV,", TASK_KEYS)
+    task_rows = parse_task_rows(log_path)
 
     if wcet is None:
         print("[error] no WCET_CSV line found")
         return 2
-    if task is None:
+    if task is None and not task_rows:
         print("[error] no TASK_CSV line found")
         print("        Rebuild/flash firmware that includes TASK_CSV output.")
         return 2
@@ -122,9 +161,19 @@ def main() -> int:
     infer_period = args.infer_period_ms
     logger_period = infer_period
 
-    sensor_ci_ms = cycles_to_ms(task["sensor_max"], args.cpu_hz)
-    uart_ci_ms = cycles_to_ms(task["uart_max"], args.cpu_hz)
-    logger_ci_ms = cycles_to_ms(task["logger_max"], args.cpu_hz)
+    sensor_ci_ms = cycles_to_ms(task["sensor_max"], args.cpu_hz) if task is not None else 0.0
+    uart_ci_ms = cycles_to_ms(task["uart_max"], args.cpu_hz) if task is not None else 0.0
+    logger_ci_ms = cycles_to_ms(task["logger_max"], args.cpu_hz) if task is not None else 0.0
+
+    if "Sensor" in task_rows:
+        sensor_ci_ms = cycles_to_ms(int(task_rows["Sensor"]["max_cycles"]), args.cpu_hz)
+        sensor_period = task_rows["Sensor"]["period_ms"]
+    if "UART" in task_rows:
+        uart_ci_ms = cycles_to_ms(int(task_rows["UART"]["max_cycles"]), args.cpu_hz)
+        uart_period = task_rows["UART"]["period_ms"]
+    if "Logger" in task_rows:
+        logger_ci_ms = cycles_to_ms(int(task_rows["Logger"]["max_cycles"]), args.cpu_hz)
+        logger_period = task_rows["Logger"]["period_ms"]
 
     if (uart_ci_ms > uart_period) and (not args.allow_uart_overrun):
         print("[error] measured UART ci_ms exceeds configured UART period")
@@ -144,6 +193,14 @@ def main() -> int:
         f.write(f"UART,1,{uart_period:.3f},{uart_period:.3f},{uart_ci_ms:.3f},,measured.task_csv_max\n")
         f.write(f"Inference,3,{infer_period:.3f},{infer_period:.3f},,,from_wcet\n")
         f.write(f"Logger,4,{logger_period:.3f},{logger_period:.3f},{logger_ci_ms:.3f},,measured.task_csv_max\n")
+
+        if "Feedback" in task_rows:
+            feedback_row = task_rows["Feedback"]
+            feedback_ci_ms = cycles_to_ms(int(feedback_row["max_cycles"]), args.cpu_hz)
+            f.write(
+                f"Feedback,{int(feedback_row['priority'])},{feedback_row['period_ms']:.3f},"
+                f"{feedback_row['deadline_ms']:.3f},{feedback_ci_ms:.3f},,measured.task_csv_max\n"
+            )
 
     print(f"[ok] wrote {out}")
     print("[summary] derived ci_ms from TASK_CSV max cycles:")

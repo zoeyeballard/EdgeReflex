@@ -11,6 +11,12 @@
         <file name="uart_task.h"/>
         <file name="logger_task.c"/>
         <file name="logger_task.h"/>
+        <file name="mpu6050.c"/>
+        <file name="mpu6050.h"/>
+        <file name="feedback_task.c"/>
+        <file name="feedback_task.h"/>
+        <file name="smoothing.c"/>
+        <file name="smoothing.h"/>
         <file name="led_task.c"/>
         <file name="led_task.h"/>
         <file name="switch_task.c"/>

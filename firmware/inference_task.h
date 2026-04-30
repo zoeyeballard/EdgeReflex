@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include "FreeRTOS.h"
 #include "semphr.h"
+#include "agent_state.h"
 
 //*****************************************************************************
 // Semaphore posted by inference task each time a result is ready.
@@ -31,6 +32,8 @@ typedef enum
 
 extern volatile HarClass_t  g_eLastClass;
 extern volatile uint32_t    g_uiLastCycles;   // DWT cycles for last inference
+extern volatile uint8_t     g_uiLastConfidence;
+extern volatile AgentState_t g_sAgentState;
 
 typedef struct
 {

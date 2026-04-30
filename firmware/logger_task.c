@@ -22,6 +22,7 @@
 #include "sensor_task.h"
 #include "uart_task.h"
 #include "logger_task.h"
+#include "feedback_task.h"
 #include "priorities.h"
 
 #define LOGGER_TASK_STACK       400
@@ -85,6 +86,7 @@ static void LoggerTask(void *pvParameters)
     SensorTaskTimingStats_t sensor_stats;
     UARTTaskTimingStats_t uart_stats;
     LoggerTaskTimingStats_t logger_stats;
+    FeedbackTaskTimingStats_t feedback_stats;
     TickType_t t0_ms;
 
     (void)pvParameters;
@@ -95,6 +97,7 @@ static void LoggerTask(void *pvParameters)
     UARTprintf("WCET_HEADER,count,warmup_discarded,last,min,max,max_unpreempted,mean,p99,bound,overhead,bin_width,hist_overflow,preempted,unpreempted,uptime_ms\n");
     #if TASK_CSV_ENABLE
     UARTprintf("TASK_HEADER,count,sensor_last,sensor_min,sensor_max,sensor_mean,uart_last,uart_min,uart_max,uart_mean,logger_last,logger_min,logger_max,logger_mean,uptime_ms\n");
+    UARTprintf("TASK_ROW_HEADER,task,priority,period_ms,deadline_ms,max_cycles\n");
     #endif
     #if LOG_HIST_ENABLE
     UARTprintf("WCET_HIST_HEADER,count,bin_idx,bin_lo,bin_hi,bin_count\n");
@@ -154,6 +157,7 @@ static void LoggerTask(void *pvParameters)
             SensorTaskTimingGetStats(&sensor_stats);
             UARTTaskTimingGetStats(&uart_stats);
             LoggerTaskTimingGetStats(&logger_stats);
+            FeedbackTaskTimingGetStats(&feedback_stats);
             UARTprintf("TASK_CSV,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u\n",
                        stats.count,
                        sensor_stats.last_cycles,
@@ -169,6 +173,12 @@ static void LoggerTask(void *pvParameters)
                        logger_stats.max_cycles,
                        logger_stats.mean_cycles,
                        (uint32_t)(xTaskGetTickCount() - t0_ms));
+
+            UARTprintf("TASK_CSV,Sensor,2,20,20,%u\n", sensor_stats.max_cycles);
+            UARTprintf("TASK_CSV,UART,1,10,10,%u\n", uart_stats.max_cycles);
+            UARTprintf("TASK_CSV,Inference,3,100,100,%u\n", stats.max_cycles);
+            UARTprintf("TASK_CSV,Logger,4,100,100,%u\n", logger_stats.max_cycles);
+            UARTprintf("TASK_CSV,Feedback,5,100,100,%u\n", feedback_stats.max_cycles);
             #endif
 
             #if LOG_HIST_ENABLE

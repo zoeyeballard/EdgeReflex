@@ -36,6 +36,7 @@
 #include "inference_task.h"
 #include "uart_task.h"
 #include "logger_task.h"
+#include "feedback_task.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -200,6 +201,10 @@ main(void)
 		UARTprintf("Initializing UARTTask...\n");
 		if(UARTTaskInit()      != 0) { UARTprintf("UARTTaskInit FAILED\n"); while(1){} }
 		UARTprintf("UARTTask OK\n");
+
+        UARTprintf("Initializing FeedbackTask...\n");
+        if(FeedbackTaskInit()  != 0) { UARTprintf("FeedbackTaskInit FAILED\n"); while(1){} }
+        UARTprintf("FeedbackTask OK\n");
 		
 		UARTprintf("Initializing LoggerTask...\n");
 		if(LoggerTaskInit()    != 0) { UARTprintf("LoggerTaskInit FAILED\n"); while(1){} }

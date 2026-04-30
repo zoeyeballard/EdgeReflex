@@ -469,6 +469,21 @@
               <FileType>1</FileType>
               <FilePath>.\logger_task.c</FilePath>
             </File>
+            <File>
+              <FileName>mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\mpu6050.c</FilePath>
+            </File>
+            <File>
+              <FileName>feedback_task.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\feedback_task.c</FilePath>
+            </File>
+            <File>
+              <FileName>smoothing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\smoothing.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

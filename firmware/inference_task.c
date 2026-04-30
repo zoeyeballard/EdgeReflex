@@ -22,6 +22,7 @@
 #include "inference_task.h"
 #include "priorities.h"
 #include "har_model.h"
+#include "smoothing.h"
 
 #define INFERENCE_USE_HAR_MODEL      1
 #define INFERENCE_LOG_EACH_WINDOW    0
@@ -156,6 +157,7 @@ static void WcetRecordSample(uint32_t cycles, bool preempted)
 //*****************************************************************************
 volatile HarClass_t g_eLastClass  = HAR_CLASS_UNKNOWN;
 volatile uint32_t   g_uiLastCycles = 0;
+volatile uint8_t    g_uiLastConfidence = 0U;
 
 SemaphoreHandle_t   g_xTimingSem;
 
@@ -167,7 +169,7 @@ static const char * const CLASS_NAMES[] = {
     "UNKNOWN", "WALKING", "RUNNING", "SITTING", "STANDING"
 };
 
-static AgentState_t g_sAgentState = {
+volatile AgentState_t g_sAgentState = {
     {0, 0, 0, 0},
     0U,
     0UL,
@@ -226,6 +228,7 @@ static void AgentStateUpdate(HarClass_t cls, uint32_t timestamp_ms)
     g_sAgentState.confidence = confidence;
     g_sAgentState.step++;
     g_sAgentState.last_update_ms = timestamp_ms;
+    g_uiLastConfidence = confidence;
 }
 
 //*****************************************************************************
@@ -292,6 +295,7 @@ static void InferenceTask(void *pvParameters)
         g_eLastClass = run_inference_stub(&window);
         #endif
         AgentStateUpdate(g_eLastClass, window.timestamp_ms);
+        ConfidenceSmoothingStep(g_eLastClass, window.timestamp_ms);
         t1 = DWT_SNAPSHOT();
         tick_after = xTaskGetTickCount();
         // --- End timed block ---
