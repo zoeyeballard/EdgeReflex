@@ -266,14 +266,22 @@ static void InferenceTask(void *pvParameters)
     uint32_t t1;
     uint32_t raw_cycles;
     uint32_t net_cycles;
+    TickType_t  xLastWakeTime;
     bool preempted;
 
     (void)pvParameters;
 
+    xLastWakeTime = xTaskGetTickCount();
+
     while (1)
     {
-        // Block indefinitely until sensor task posts a window
-        xQueueReceive(g_xSensorQueue, &window, portMAX_DELAY);
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(INFERENCE_PERIOD_MS));
+
+        // Take the most recent window if available, skip if none
+        if (xQueueReceive(g_xSensorQueue, &window, 0) != pdTRUE)
+        {
+            continue;
+        }
 
         // --- Timed inference block ---
         tick_before = xTaskGetTickCount();
