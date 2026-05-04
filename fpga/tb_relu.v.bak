@@ -1,0 +1,75 @@
+/*
+ * tb_relu.v - ModelSim Testbench for ReLU Module
+ * 
+ * Tests ReLU activation on INT8 values
+ */
+
+`timescale 1ns / 1ps
+
+module tb_relu;
+
+    reg clk;
+    reg [511:0] data_in;
+    wire [511:0] data_out;
+    
+    // Instantiate DUT
+    relu dut (
+        .clk(clk),
+        .data_in(data_in),
+        .data_out(data_out)
+    );
+    
+    // Clock generation
+    always #10 clk = ~clk;
+    
+    initial begin
+        clk = 1'b0;
+        data_in = 512'b0;
+        
+        #20;
+        
+        $display("=== Test 1: Positive values ===");
+        // Set neurons 0-3 to positive values (10, 20, 30, 40)
+        data_in[7:0]   = 8'sd10;
+        data_in[15:8]  = 8'sd20;
+        data_in[23:16] = 8'sd30;
+        data_in[31:24] = 8'sd40;
+        
+        #20;
+        $display("Input[0:3]: %d %d %d %d",
+                 $signed(data_in[7:0]), $signed(data_in[15:8]),
+                 $signed(data_in[23:16]), $signed(data_in[31:24]));
+        $display("Output[0:3]: %d %d %d %d",
+                 $signed(data_out[7:0]), $signed(data_out[15:8]),
+                 $signed(data_out[23:16]), $signed(data_out[31:24]));
+        
+        #20;
+        
+        $display("=== Test 2: Negative values ===");
+        // Set neurons 4-7 to negative values (-10, -20, -30, -40)
+        data_in[39:32] = -8'sd10;
+        data_in[47:40] = -8'sd20;
+        data_in[55:48] = -8'sd30;
+        data_in[63:56] = -8'sd40;
+        
+        #20;
+        $display("Input[4:7]: %d %d %d %d",
+                 $signed(data_in[39:32]), $signed(data_in[47:40]),
+                 $signed(data_in[55:48]), $signed(data_in[63:56]));
+        $display("Output[4:7]: %d %d %d %d",
+                 $signed(data_out[39:32]), $signed(data_out[47:40]),
+                 $signed(data_out[55:48]), $signed(data_out[63:56]));
+        
+        if ($signed(data_out[39:32]) == 8'sd0 &&
+            $signed(data_out[47:40]) == 8'sd0 &&
+            $signed(data_out[55:48]) == 8'sd0 &&
+            $signed(data_out[63:56]) == 8'sd0) begin
+            $display("PASS: Negative values zeroed by ReLU");
+        end else begin
+            $display("FAIL: Negative values not properly zeroed");
+        end
+        
+        #1000 $finish;
+    end
+
+endmodule

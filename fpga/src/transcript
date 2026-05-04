@@ -1,0 +1,96 @@
+# Compile of irq_gen.v was successful.
+# Compile of mac_array.v failed with 13 errors.
+# Compile of relu.v was successful with warnings.
+# Compile of spi_slave.v failed with 2 errors.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v failed with 1 errors.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 4 failed with 24 errors.
+# Compile of irq_gen.v was successful.
+# Compile of irq_gen.v failed with 13 errors.
+# Compile of mac_array.v failed with 13 errors.
+# Compile of relu.v was successful with warnings.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v failed with 1 errors.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 4 failed with 35 errors.
+# Compile of mac_array.v was successful.
+# Compile of irq_gen.v was successful with warnings.
+# Compile of mac_array.v failed with 13 errors.
+# Compile of relu.v was successful with warnings.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v failed with 1 errors.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 3 failed with 22 errors.
+# Compile of relu.v was successful.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v failed with 1 errors.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 2 failed with 9 errors.
+# Compile of irq_gen.v was successful.
+# Compile of mac_array.v was successful.
+# Compile of relu.v was successful with warnings.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v failed with 1 errors.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 2 failed with 9 errors.
+# Compile of irq_gen.v was successful.
+# Compile of mac_array.v was successful.
+# Compile of relu.v was successful with warnings.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v was successful.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 1 failed with 8 errors.
+# Compile of irq_gen.v was successful.
+# Compile of mac_array.v was successful.
+# Compile of relu.v was successful.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v failed with 8 errors.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v was successful.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 1 failed with 8 errors.
+# Compile of irq_gen.v was successful.
+# Compile of mac_array.v was successful.
+# Compile of relu.v was successful.
+# Compile of spi_slave.v was successful.
+# Compile of tb_irq_gen.v was successful.
+# Compile of tb_mac_array.v was successful.
+# Compile of tb_relu.v was successful.
+# Compile of tb_spi_slave.v was successful.
+# Compile of tb_top.v was successful.
+# Compile of top.v was successful.
+# Compile of weight_rom.v was successful.
+# 11 compiles, 0 failed with no errors.

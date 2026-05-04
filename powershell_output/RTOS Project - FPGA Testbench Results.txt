@@ -1,0 +1,345 @@
+﻿tb_irq_gen.v
+run -all
+# === Test 1: IRQ Pulse Generation ===
+# Time 290000: relu_done pulsed
+# Time 310000: irq_pin=1 status_reg=00000001
+# Time 330000: irq_pin=1 status_reg=00000011
+# Time 350000: irq_pin=1 status_reg=00000011
+# Time 370000: irq_pin=1 status_reg=00000011
+# Time 390000: irq_pin=0 status_reg=00000011
+# Time 410000: irq_pin=0 status_reg=00000001
+# Time 430000: irq_pin=0 status_reg=00000001
+# Time 450000: irq_pin=0 status_reg=00000001
+# Time 470000: irq_pin=0 status_reg=00000001
+# Time 490000: irq_pin=0 status_reg=00000001
+# === Test 2: Status Register Read ===
+# Before status_read: status_reg=00000011
+# After status_read: status_reg=00000000
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_irq_gen.v(66)
+#    Time: 1270 ns  Iteration: 0  Instance: /tb_irq_gen
+# 1
+# Break in Module tb_irq_gen at C:/personal/EdgeReflex/fpga/tb_irq_gen.v line 66
+—
+tb_mac_array.v
+run -all
+# Time=0 start=0 mac_done=x results[0]=   x
+# Time=10000 start=0 mac_done=0 results[0]=   x
+# Time=20000 start=0 mac_done=0 results[0]=   0
+# === Test 1: Simple dot product ===
+# Feature vector: [1, 2, 3, 0, 0, ...]
+# Neuron 0 weights: [2, 2, 2, 0, 0, ...]
+# Expected result: 1*2 + 2*2 + 3*2 = 12
+# Time=270000 start=1 mac_done=1 results[0]=  12
+# Time=290000 start=0 mac_done=0 results[0]=  12
+# MAC done after pipeline delay
+# Result[0] (neuron 0):   12 (signed)
+# PASS: Dot product computed correctly
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_mac_array.v(85)
+#    Time: 810 ns  Iteration: 0  Instance: /tb_mac_array
+# 1
+# Break in Module tb_mac_array at C:/personal/EdgeReflex/fpga/tb_mac_array.v line 85
+—
+tb_relu.v
+run -all
+# === Test 1: Positive values ===
+# Input[0:3]:   10   20   30   40
+# Output[0:3]:   10   20   30   40
+# === Test 2: Negative values ===
+# Input[4:7]:  -10  -20  -30  -40
+# Output[4:7]:    0    0    0    0
+# PASS: Negative values zeroed by ReLU
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_relu.v(72)
+#    Time: 1080 ns  Iteration: 0  Instance: /tb_relu
+# 1
+# Break in Module tb_relu at C:/personal/EdgeReflex/fpga/tb_relu.v line 72
+—
+tb_spi_slave.v
+run -all
+# Time=0 cs_n=1 sclk=0 mosi=0 miso=x frame_done=x
+# Time=20000 cs_n=1 sclk=0 mosi=0 miso=0 frame_done=0
+# === Test 1: Receive 304 bytes ===
+# Time=170000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=270000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=370000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=470000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=570000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=870000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=970000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=1070000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=1170000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=1270000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=1370000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=1470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=1570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=1670000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=1770000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=1870000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=1970000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=2070000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=2170000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=2270000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=2370000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=2470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=2570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=2670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=2770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=2870000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=2970000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=3070000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=3170000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=3270000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=3370000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=3470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=3570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=3670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=3770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=3870000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=3970000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=4070000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=4170000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=4270000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=4370000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=4470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=4570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=4670000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=4770000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=4870000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=4970000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=5070000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=5170000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=5270000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=5370000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=5470000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=5570000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=5670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=5770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=5870000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=5970000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=6070000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=6170000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=6270000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=6370000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=6470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=6570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=6670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=6770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=6870000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=6970000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=7070000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=7170000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=7270000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=7370000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=7470000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=7570000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=7670000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=7770000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=7870000 cs_n=0 sclk=1 mosi=1 miso=0 frame_done=0
+# Time=7970000 cs_n=0 sclk=0 mosi=1 miso=0 frame_done=0
+# Time=8070000 cs_n=0 sclk=1 mosi=0 miso=0 frame_done=0
+# Time=8170000 cs_n=0 sclk=0 mosi=0 miso=0 frame_done=0
+# Received 5 bytes; rx_data[0:40] = f7 6e e6 5d 55
+# Time=8470000 cs_n=1 sclk=0 mosi=0 miso=0 frame_done=0
+# Time=8490000 cs_n=1 sclk=0 mosi=0 miso=0 frame_done=1
+# PASS: frame_done asserted
+# Time=8830000 cs_n=1 sclk=0 mosi=0 miso=0 frame_done=0
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_spi_slave.v(109)
+#    Time: 9670 ns  Iteration: 0  Instance: /tb_spi_slave
+# 1
+# Break in Module tb_spi_slave at C:/personal/EdgeReflex/fpga/tb_spi_slave.v line 109
+—
+tb_top.v
+run -all
+# Time=0 cs_n=1 sclk=0 irq_pin=x miso=x
+# Time=10000 cs_n=1 sclk=0 irq_pin=0 miso=x
+# Time=20000 cs_n=1 sclk=0 irq_pin=0 miso=0
+# === Test 1: Full SPI Transaction ===
+# CS asserted at time 670000
+# Time=670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=1070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=1170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=1270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=1370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=1470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=1570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=1670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=1770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=1870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=1970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=2070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=2170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=2270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=2370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=2470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=2570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=2670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=2770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=2870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=2970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=3070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=3170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=3270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=3370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=3470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=3570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=3670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=3770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=3870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=3970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=4070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=4170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=4270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=4370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=4470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=4570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=4670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=4770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=4870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=4970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=5070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=5170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=5270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=5370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=5470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=5570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=5670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=5770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=5870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=5970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=6070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=6170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=6270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=6370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=6470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=6570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=6670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=6770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=6870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=6970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=7070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=7170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=7270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=7370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=7470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=7570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=7670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=7770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=7870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=7970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=8070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=8170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=8270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=8370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=8470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=8570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=8670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=8770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=8870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=8970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=9070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=9170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=9270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=9370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=9470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=9570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=9670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=9770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=9870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=9970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=10070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=10170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=10270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=10370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=10470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=10570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=10670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=10770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=10870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=10970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=11070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=11170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=11270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=11370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=11470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=11570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=11670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=11770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=11870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=11970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=12070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=12170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=12270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=12370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=12470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=12570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=12670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=12770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=12870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=12970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=13070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=13170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=13270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=13370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=13470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=13570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=13670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=13770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=13870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=13970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=14070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=14170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=14270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=14370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=14470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=14570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=14670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=14770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=14870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=14970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=15070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=15170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=15270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=15370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=15470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=15570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=15670000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=15770000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=15870000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=15970000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=16070000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=16170000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=16270000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=16370000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=16470000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=16570000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Sent 10 bytes at time 16670000
+# Time=17330000 cs_n=0 sclk=0 irq_pin=1 miso=0
+# Time=17410000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Receiving Layer 1 result...
+# Time=18170000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=18270000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=18370000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=18470000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=18570000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=18670000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=18770000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=18870000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=18970000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=19070000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=19170000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=19270000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=19370000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=19470000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Time=19570000 cs_n=0 sclk=1 irq_pin=0 miso=0
+# Time=19670000 cs_n=0 sclk=0 irq_pin=0 miso=0
+# Received byte: 00
+# CS deasserted at time 19870000
+# Time=19870000 cs_n=1 sclk=0 irq_pin=0 miso=0
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_top.v(110)
+#    Time: 20870 ns  Iteration: 0  Instance: /tb_top
+# 1
+# Break in Module tb_top at C:/personal/EdgeReflex/fpga/tb_top.v line 110

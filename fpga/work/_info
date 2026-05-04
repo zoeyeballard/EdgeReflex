@@ -1,0 +1,287 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/ADD/Lab4_BALLARD_Zoey/sim_rom
+virq_gen
+Z0 !s110 1777859893
+!i10b 1
+!s100 MVfg]M^giz]=F7d2ao<ec1
+Z1 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IF1jCI>>aS6>77`PQkX0Ag0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 dC:/personal/EdgeReflex/fpga
+Z4 w1777852966
+8C:/personal/EdgeReflex/fpga/irq_gen.v
+FC:/personal/EdgeReflex/fpga/irq_gen.v
+!i122 169
+L0 24 52
+Z5 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z6 !s108 1777859893.000000
+!s107 C:/personal/EdgeReflex/fpga/irq_gen.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/irq_gen.v|
+!i113 1
+Z7 o-work work
+Z8 tCvgOpt 0
+vmac_array
+R0
+!i10b 1
+!s100 z0]S:5X4E95U3aW>YG=]M0
+R1
+I0c=aCz9QIZ9kBXe4iQ1Zf2
+R2
+R3
+w1777857811
+8C:/personal/EdgeReflex/fpga/mac_array.v
+FC:/personal/EdgeReflex/fpga/mac_array.v
+!i122 170
+L0 9 68
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/mac_array.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/mac_array.v|
+!i113 1
+R7
+R8
+vrelu
+R0
+!i10b 1
+!s100 e6JacVQfbBP9IhcUkTO0l3
+R1
+IS[Q8aYeakY<>:XTim6C9V1
+R2
+R3
+w1777851049
+8C:/personal/EdgeReflex/fpga/relu.v
+FC:/personal/EdgeReflex/fpga/relu.v
+!i122 171
+L0 16 36
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/relu.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/relu.v|
+!i113 1
+R7
+R8
+vspi_slave
+R0
+!i10b 1
+!s100 C>QAWcU_jfWk]CB<lLzE01
+R1
+IJDnZSo3j6[>Qn9FX5;3mf1
+R2
+R3
+w1777859891
+8C:/personal/EdgeReflex/fpga/spi_slave.v
+FC:/personal/EdgeReflex/fpga/spi_slave.v
+!i122 172
+L0 9 203
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/spi_slave.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/spi_slave.v|
+!i113 1
+R7
+R8
+vtb_irq_gen
+R0
+!i10b 1
+!s100 5ZMQj]i`d1WckEoSO[fG=1
+R1
+Iijl:X2U1j1<h`oRI[56i>0
+R2
+R3
+R4
+8C:/personal/EdgeReflex/fpga/tb_irq_gen.v
+FC:/personal/EdgeReflex/fpga/tb_irq_gen.v
+!i122 173
+L0 7 63
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/tb_irq_gen.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/tb_irq_gen.v|
+!i113 1
+R7
+R8
+vtb_mac_array
+R0
+!i10b 1
+!s100 Y><GSOkXIG0LRQA9@ObP02
+R1
+I`[ijb^KD^i=PH58[=JzAG3
+R2
+R3
+R4
+8C:/personal/EdgeReflex/fpga/tb_mac_array.v
+FC:/personal/EdgeReflex/fpga/tb_mac_array.v
+!i122 174
+L0 9 86
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/tb_mac_array.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/tb_mac_array.v|
+!i113 1
+R7
+R8
+vtb_relu
+Z9 !s110 1777859894
+!i10b 1
+!s100 4EbB;mKHdZWbA2E^^6z772
+R1
+IZ3zI`X]IE2JSHW`8DdGbQ3
+R2
+R3
+w1777851171
+8C:/personal/EdgeReflex/fpga/tb_relu.v
+FC:/personal/EdgeReflex/fpga/tb_relu.v
+!i122 175
+L0 9 67
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/personal/EdgeReflex/fpga/tb_relu.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/tb_relu.v|
+!i113 1
+R7
+R8
+vtb_spi_slave
+R9
+!i10b 1
+!s100 jBS:;94eX:_N]Gfmkge9E2
+R1
+I^5V=Db4;fJ<_;gE_7k:Y:1
+R2
+R3
+R4
+8C:/personal/EdgeReflex/fpga/tb_spi_slave.v
+FC:/personal/EdgeReflex/fpga/tb_spi_slave.v
+!i122 176
+L0 12 107
+R5
+r1
+!s85 0
+31
+Z10 !s108 1777859894.000000
+!s107 C:/personal/EdgeReflex/fpga/tb_spi_slave.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/tb_spi_slave.v|
+!i113 1
+R7
+R8
+vtb_top
+R9
+!i10b 1
+!s100 :o?Cemgo>1OXT]m@MgcA@1
+R1
+IHJQP4:AnATi]9:YR^=Z^@2
+R2
+R3
+w1777850886
+8C:/personal/EdgeReflex/fpga/tb_top.v
+FC:/personal/EdgeReflex/fpga/tb_top.v
+!i122 177
+L0 12 108
+R5
+r1
+!s85 0
+31
+R10
+!s107 C:/personal/EdgeReflex/fpga/tb_top.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/tb_top.v|
+!i113 1
+R7
+R8
+vtop
+R9
+!i10b 1
+!s100 OFUo=>[][g8BGn2Nn@Jh:3
+R1
+I5j>J>omJjINIHMZiReThV0
+R2
+R3
+R4
+8C:/personal/EdgeReflex/fpga/top.v
+FC:/personal/EdgeReflex/fpga/top.v
+!i122 178
+L0 50 139
+R5
+r1
+!s85 0
+31
+R10
+!s107 C:/personal/EdgeReflex/fpga/top.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/top.v|
+!i113 1
+R7
+R8
+vweight_rom
+R9
+!i10b 1
+!s100 d2IU:5@@em@37A;aT0aIf1
+R1
+IRiGBWzXSTPUc3RD`zgkb@3
+R2
+R3
+w1777853655
+8C:/personal/EdgeReflex/fpga/weight_rom.v
+FC:/personal/EdgeReflex/fpga/weight_rom.v
+!i122 179
+L0 9 13
+R5
+r1
+!s85 0
+31
+R10
+!s107 C:/personal/EdgeReflex/fpga/weight_rom.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/weight_rom.v|
+!i113 1
+R7
+R8
+vweights_rom
+R9
+!i10b 1
+!s100 n@DLFX1R9aZZj`FHDTih>2
+R1
+IJ5nFTE;Mz0Uf4@>HjG<ea2
+R2
+R3
+w1777853350
+8C:/personal/EdgeReflex/fpga/weights_rom_bb.v
+FC:/personal/EdgeReflex/fpga/weights_rom_bb.v
+!i122 180
+L0 35 17
+R5
+r1
+!s85 0
+31
+R10
+!s107 C:/personal/EdgeReflex/fpga/weights_rom_bb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/personal/EdgeReflex/fpga/weights_rom_bb.v|
+!i113 1
+R7
+R8
