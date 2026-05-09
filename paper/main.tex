@@ -26,27 +26,26 @@
 
 \maketitle
 
-\begin{abstract}
-Real-time embedded systems increasingly require agentic AI inference loops that carry state between inference steps, yet this fundamental departure from stateless classifiers significantly tightens period constraints in ways that software alone cannot accommodate. This work presents EdgeReflex, a FreeRTOS-based Human Activity Recognition system deployed on a TM4C123GH6PM microcontroller, that demonstrates the complete design methodology for schedulable agentic inference. We employ formal Worst-Case Execution Time (WCET) measurement via ARM Cortex-M4 DWT cycle counters, Rate Monotonic schedulability analysis, and clearly identify the agentic period requirement as the system's breaking point. When the agentic feedback loop is introduced with a 100~ms period constraint, system utilization rises from 0.10 to 3.25, causing deadline misses in both the Logger and Feedback tasks. Response Time Analysis confirms these failures. We then propose and validate a hardware-software co-design solution via FPGA MAC offload that restores schedulability. Results show that projected scheduling constraints are satisfied following Layer 1 inference offload to an Intel Cyclone~V FPGA, with measured inference timing now showing highly deterministic behavior (min 25.39~ms, mean 25.39~ms, max 25.40~ms at 80~MHz across 1012 samples). This work demonstrates a complete, methodology-driven path from formal WCET measurement through schedulability proof to hardware acceleration, offering a reusable template for embedded agentic AI systems beyond HAR.
-\end{abstract}
+\begin{abstract} 
+Agentic AI inference loops have become a rising topic in real-time embedded systems. By allowing the system to carry state between inference steps, it creates additional feedback for an artificial intelligence. However, this fundamental departure from stateless classifiers significantly tightens period constraints in ways that software alone cannot accommodate. This work presents EdgeReflex, a FreeRTOS-based Human Activity Recognition system deployed on a TM4C123GH6PM microcontroller, that demonstrates the complete design methodology for schedulable agentic inference. We employ formal Worst-Case Execution Time (WCET) measurement via ARM Cortex-M4 DWT cycle counters, Rate Monotonic schedulability analysis, and clearly identify the agentic period requirement as the system's breaking point. We then propose and validate a solution via FPGA MAC offload that restores schedulability. This work demonstrates a complete, methodology-driven path from formal WCET measurement through schedulability proof to hardware acceleration. 
+\end{abstract} 
 
-\begin{IEEEkeywords}
-real-time scheduling, Rate Monotonic analysis, WCET measurement, agentic inference, embedded AI, FPGA acceleration, hardware-software co-design
-\end{IEEEkeywords}
+\begin{IEEEkeywords} 
+real-time scheduling, Rate Monotonic analysis, WCET measurement, agentic inference, embedded AI, FPGA acceleration \end{IEEEkeywords}
 
 \section{Introduction}
 
-Edge artificial intelligence is rapidly evolving from stateless inference toward agentic loops that carry persistent state between decision steps. While traditional classifiers process each input independently, agentic systems maintain feedback: the output of one inference step becomes part of the input to the next step. This architectural shift introduces a fundamental timing challenge that has received limited formal treatment in the embedded systems literature.
+Edge artificial intelligence is rapidly evolving from stateless inference toward agentic loops that carry persistent state between decision steps. While traditional classifiers process each input independently, agentic systems maintain feedback: the output of one inference step becomes part of the input to the next step. This architectural shift introduces a fundamental timing challenge.
 
-In rate-monotonic (RM) scheduled real-time systems, task periods are the primary schedulability lever. Stateless inference tasks can tolerate generous periods (e.g., 1~s) without degradation, but agentic loops require tighter periods to maintain state freshness and behavioral continuity. When a human activity recognition (HAR) agent tracks motion patterns, stale state vectors beyond 100~ms can degrade classification quality. This creates a hard deadline: reduce the period from 1~s to 100~ms, and suddenly utilization climbs from acceptable to unfeasible.
+In rate-monotonic (RM) scheduled embedded systems, task periods are the central schedulability constraint. Stateless inference tasks can tolerate generous periods (e.g., 1~s) without degradation, but agentic loops require tighter periods to maintain state freshness and behavioral continuity. When a human activity recognition (HAR) agent tracks motion patterns, stale state vectors beyond 100~ms can degrade classification quality. This creates a hard deadline: reduce the period from 1~s to 100~ms, and suddenly utilization climbs from acceptable to unfeasible.
 
-Rate Monotonic scheduling, formalized by Liu and Layland in 1973~\cite{Liu1973}, provides a rigorous framework for proving real-time feasibility when task periods, deadlines, and execution times are known. However, measuring WCET in modern embedded AI systems has proven challenging. Prior work on embedded AI acceleration either applies scheduling theory to synthetic workloads, or demonstrates FPGA speedup without formal schedulability guarantees. This work bridges that gap.
+Rate Monotonic scheduling, formalized by Liu and Layland~\cite{Liu1973}, provides a rigorous framework for proving real-time feasibility when task periods, deadlines, and execution times are known. However, measuring Worst-Case Execution Time (WCET) in modern embedded AI systems has proven challenging. Prior work on embedded AI acceleration either applies scheduling theory to synthetic workloads, or demonstrates FPGA speedup without formal schedulability guarantees. This work bridges that gap.
 
 We present EdgeReflex, a complete system design that:
 \begin{enumerate}
 \item Employs zero-overhead WCET measurement using ARM Cortex-M4 DWT cycle counters with a principled methodology (warmup discard, ring buffers, histogram-based bound estimation).
 \item Demonstrates the schedulability crisis introduced by agentic state feedback, showing that Response Time Analysis reveals deadline misses for both Logger and Feedback tasks.
-\item Proposes and validates a hardware-software co-design solution via FPGA MAC offload that restores full schedulability.
+\item Proposes and validates a solution via FPGA MAC offload that restores full schedulability.
 \item Provides open-source implementation on commodity hardware (TM4C123GH6PM and Terasic DE0-CV).
 \end{enumerate}
 
@@ -56,15 +55,15 @@ The methodology transfers directly to other edge AI domains: vehicle access cont
 
 \section{Related Work}
 
-\textbf{Rate Monotonic Scheduling:} Liu and Layland~\cite{Liu1973} established the foundational utilization bound $U_{\text{bound}}(n) = n(2^{1/n} - 1)$ for $n$ tasks, and proved that assigning priority inversely proportional to period is optimal among fixed-priority schemes. Audsley et al.~\cite{Sha1994} later extended this with Response Time Analysis (RTA), a necessary and sufficient test that permits deadline analysis even when utilization exceeds the bound. RTA has become the de facto standard for real-time kernel design and certification in safety-critical systems.
+\textbf{Rate Monotonic Scheduling:} Liu and Layland~\cite{Liu1973} established the foundational utilization bound $U_{\text{bound}}(n) = n(2^{1/n} - 1)$ for $n$ tasks, and proved that assigning priority inversely proportional to period is optimal among fixed-priority schemes. Audsley et al.~\cite{Audsley1991} later extended this with Response Time Analysis (RTA), a necessary and sufficient test that permits deadline analysis even when utilization exceeds the bound. RTA has become the de facto standard for real-time kernel design and certification in safety-critical systems.
 
 \textbf{FPGA Inference Accelerators:} Significant effort has been devoted to neural network acceleration on reconfigurable logic. Modern approaches include systolic arrays for matrix multiplication, FPGA implementations of deep learning inference (e.g., Vivado HLS designs), and specialized architectures for edge deployment. However, these studies rarely integrate formal schedulability analysis; acceleration is demonstrated in isolation without proving that the resulting system remains schedulable under real-time constraints.
 
-\textbf{Edge AI and Embedded Learning:} Warden and Situnayake~\cite{Warden2019} provide comprehensive treatment of TensorFlow Lite on microcontrollers, focusing on memory footprint and inference latency. Ramegowda and Lin~\cite{Ramegowda2022} examine mixed real-time task handling on FreeRTOS, but without agentic state extensions. Pang et al.~\cite{Pang2022} analyze deep learning on UCI HAR data, achieving high accuracy, but do not address real-time constraints.
+\textbf{Edge AI and Embedded Learning:} Warden and Situnayake~\cite{Warden2019} provide comprehensive treatment of TensorFlow Lite on microcontrollers, emphasizing compact memory use and efficient inference. Ramegowda and Lin~\cite{Ramegowda2022} discuss deterministic real-time support in FreeRTOS. Pang et al.~\cite{Pang2022} study deep learning for UCI HAR dataset with strong classification accuracy, but their contribution is primarily dataset-level recognition rather than real-time embedded execution.
 
-\textbf{WCET Analysis and Measurement:} Wilhelm et al.~\cite{Wilhelm2008} survey WCET analysis methods and tools. Abella et al.~\cite{Abella2015} discuss pitfalls in WCET trustworthiness, particularly for complex microarchitectures. Biswas et al.~\cite{Biswas2021} specifically address ARM Cortex performance counters for control flow integrity, validating the use of DWT counters for cycle counting.
+\textbf{WCET Analysis and Measurement:} Wilhelm et al.~\cite{Wilhelm2008} survey WCET analysis methods and tools. Abella et al.~\cite{Abella2015} discuss pitfalls in WCET analysis on modern microarchitectures. Biswas et al.~\cite{Biswas2021} examine ARM Cortex performance counters and DWT-based counting in a control-flow integrity setting.
 
-\textbf{Gap in Literature:} Few works simultaneously apply formal RM analysis to neural inference tasks with agentic state extensions on microcontrollers, provide rigorous WCET measurement, and demonstrate a hardware-software co-design path to schedulability. This work fills that gap.
+\textbf{Gap in Literature:} There is limited prior work that integrates real-time schedulability analysis, microcontroller-based neural inference, and empirically grounded WCET characterization in a single workflow. This work addresses that integration by combining rate-monotonic analysis, timing measurement, and hardware-software co-design considerations for microcontroller deployment.
 
 \section{System Design}
 
@@ -149,18 +148,17 @@ The FPGA design accelerates Layer 1 inference (the $304 \times 64$ MAC plus ReLU
 \item \textbf{top.v:} Top-level state machine orchestrating the pipeline.
 \end{itemize}
 
-The state machine operates in five phases:
+The state machine operates in four phases, cycling as follows:
 \begin{enumerate}
 \item \textbf{IDLE:} Waiting for SPI chip select assertion.
 \item \textbf{RECEIVING:} Clocking in 304 feature bytes via MOSI.
 \item \textbf{COMPUTING:} Executing MAC and ReLU on internal parallel units.
-\item \textbf{SENDING:} Clocking out 64 result bytes via MISO.
-\item \textbf{IDLE:} Pulsing IRQ to signal completion; awaiting next cycle.
+\item \textbf{SENDING:} Clocking out 64 result bytes via MISO, then pulsing IRQ to signal completion before returning to IDLE.
 \end{enumerate}
 
 SPI protocol: TM4C side initiates a 304-byte transfer on SSI0 master. FPGA receives all bytes, computes Layer~1 MAC plus ReLU, and on completion returns 64 bytes. An IRQ pulse on GPIO allows the microcontroller to service the completion via ISR and continue execution.
 
-\textbf{Hardware Bring-Up Status:} SPI transmission has been verified (304-byte frames confirmed per cycle). IRQ signaling has been diagnosed; a GPIO pin assignment issue was identified and noted for resolution in the next hardware revision. ModelSim simulation confirms correct Layer~1 output; the bring-up is functionally complete but not yet deployed on live silicon.
+\textbf{Hardware Bring-Up Status:} SPI transmission has been verified (304-byte frames confirmed per cycle). IRQ signaling has been diagnosed; a GPIO pin assignment issue was identified and noted for resolution in the next hardware revision. ModelSim simulation confirms correct Layer~1 output; the bring-up is functionally complete but not yet deployed.
 
 \section{Results}
 

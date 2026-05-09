@@ -1,61 +1,61 @@
 \relax 
 \citation{Liu1973}
 \citation{Liu1973}
-\citation{Sha1994}
+\citation{Audsley1991}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
 \citation{Warden2019}
 \citation{Ramegowda2022}
 \citation{Pang2022}
 \citation{Wilhelm2008}
 \citation{Abella2015}
 \citation{Biswas2021}
-\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}System Design}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A}Hardware Platform}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Task Model}{2}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Task Set Definition}}{2}{}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:taskset}{{1}{2}{}{table.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B}Task Model}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {C}WCET Measurement Methodology}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {D}MLP Model}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {E}Agentic State Extension}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {F}FPGA Accelerator Design}{3}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Baseline RTA Results (1000~ms Inference Period, No Agentic State)}}{3}{}\protected@file@percent }
 \newlabel{tab:baseline}{{2}{3}{}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces RTA Margins: Baseline Configuration. All tasks meet deadlines with comfortable margins.}}{3}{}\protected@file@percent }
+\newlabel{fig:rta_baseline}{{1}{3}{}{figure.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Results}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {A}Baseline Schedulability: Stateless Classifier at 1000~ms Period}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {B}Agentic Loop Schedulability Crisis: 100~ms Period, Five Tasks}{3}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces RTA Margins: Baseline Configuration. All tasks meet deadlines with comfortable margins.}}{4}{}\protected@file@percent }
-\newlabel{fig:rta_baseline}{{1}{4}{}{figure.1}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Agentic Loop RTA Results (100~ms Inference Period, Full Task Set)}}{4}{}\protected@file@percent }
 \newlabel{tab:agentic}{{3}{4}{}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C}FPGA Offload Projected Results (Simulation-Based)}{4}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Agentic Crisis RTA Margins: Logger and Feedback tasks experience significant deadline misses (red bars), with Feedback missing its 100~ms deadline by 445.69~ms. This visualizes why FPGA acceleration is mandatory.}}{4}{}\protected@file@percent }
 \newlabel{fig:rta_agentic_crisis}{{2}{4}{}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C}FPGA Offload Projected Results (Simulation-Based)}{4}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces WCET Trend Under Agentic Load: Inference execution time under full agentic feedback workload, showing elevated baseline compared to lighter software-only execution.}}{4}{}\protected@file@percent }
 \newlabel{fig:wcet_agentic}{{3}{4}{}{figure.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Projected RTA Results After FPGA Offload}}{4}{}\protected@file@percent }
+\newlabel{tab:projected}{{4}{4}{}{table.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {D}WCET Distribution and Determinism}{4}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Projected RTA Results After FPGA Offload}}{5}{}\protected@file@percent }
-\newlabel{tab:projected}{{4}{5}{}{table.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Utilization Comparison: Baseline (0.103), Agentic Crisis (3.246), and Projected FPGA-Accelerated (< 0.40) configurations versus the utilization bound (0.743). FPGA acceleration of Layer 1 inference restores the system to a safely schedulable region.}}{5}{}\protected@file@percent }
 \newlabel{fig:utilization}{{4}{5}{}{figure.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A}The Agentic Period as a Fundamental Constraint}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {B}Limitations of Inference-Only Acceleration}{5}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces WCET Trend: Inference samples showing exceptionally tight distribution across 1012 measurements with minimal variance.}}{5}{}\protected@file@percent }
 \newlabel{fig:wcet_trend}{{5}{5}{}{figure.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A}The Agentic Period as a Fundamental Constraint}{5}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Preemption Ratio: All 1012 samples experienced preemption, indicating that measured times include multi-task interference.}}{5}{}\protected@file@percent }
 \newlabel{fig:preemption}{{6}{5}{}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B}Limitations of Inference-Only Acceleration}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {C}Conservative Analysis with Preemption}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{5}{}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{Liu1973}{1}
-\bibcite{Sha1994}{2}
+\bibcite{Audsley1991}{2}
 \bibcite{Warden2019}{3}
 \bibcite{Ramegowda2022}{4}
 \bibcite{Pang2022}{5}
 \bibcite{Wilhelm2008}{6}
 \bibcite{Abella2015}{7}
 \bibcite{Biswas2021}{8}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{6}{}\protected@file@percent }
 \gdef \@abspage@last{6}

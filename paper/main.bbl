@@ -26,10 +26,10 @@ C.~L. Liu and J.~W. Layland, ``Scheduling algorithms for multiprogramming in a
   hard-real-time environment,'' \emph{Journal of the ACM}, vol.~20, no.~1, pp.
   46--61, Jan 1973.
 
-\bibitem{Sha1994}
-L.~Sha, R.~Rajkumar, and S.~S. Sathaye, ``Generalized rate-monotonic scheduling
-  theory: {A} framework for developing real-time systems,'' \emph{Proceedings
-  of the IEEE}, vol.~82, no.~1, pp. 68--82, 1994.
+\bibitem{Audsley1991}
+N.~C. Audsley, A.~Burns, M.~F. Richardson, and A.~J. Wellings, ``Hard real-time
+  scheduling: The deadline-monotonic approach,'' in \emph{Proceedings of the
+  IEEE Workshop on Real-Time Operating Systems and Software}, 1991.
 
 \bibitem{Warden2019}
 P.~Warden and D.~Situnayake, \emph{{TinyML}: {M}achine learning with
