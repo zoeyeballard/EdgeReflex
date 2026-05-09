@@ -6,15 +6,15 @@
  * 
  * Interface:
  *   clk       - 50 MHz clock
- *   data_in   - 64×8 = 512-bit input (64 signed INT8 values)
- *   data_out  - 64×8 = 512-bit output (ReLU applied elementwise)
+ *   data_in   - 64ï¿½8 = 512-bit input (64 signed INT8 values)
+ *   data_out  - 64ï¿½8 = 512-bit output (ReLU applied elementwise)
  * 
  * Timing: Combinational (single cycle)
  *         Or pipelined by one cycle if needed (add register stage)
  */
 
 module relu #(
-    parameter WIDTH = 512,      // 64 × 8 bits
+    parameter WIDTH = 512,      // 64 ï¿½ 8 bits
     parameter NEURONS = 64
 )(
     input clk,

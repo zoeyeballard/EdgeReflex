@@ -1,0 +1,7 @@
+
+State Machine - |EdgeReflex|state
+Name state.SENDING state.COMPUTING state.RECEIVING state.IDLE 
+state.IDLE 0 0 0 0 
+state.RECEIVING 0 0 1 1 
+state.COMPUTING 0 1 0 1 
+state.SENDING 1 0 0 1 

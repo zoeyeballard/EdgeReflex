@@ -9,7 +9,7 @@
 
 `timescale 1ns / 1ps
 
-module tb_top;
+module tb_EdgeReflex;
 
     reg clk, rst_n;
     reg sclk, cs_n, mosi;
@@ -18,7 +18,7 @@ module tb_top;
     wire irq_pin;
     
     // Instantiate DUT
-    top dut (
+    EdgeReflex dut (
         .clk(clk), .rst_n(rst_n),
         .sclk(sclk), .cs_n(cs_n), .mosi(mosi), .miso(miso),
         .irq_pin(irq_pin)

@@ -1,0 +1,47 @@
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+	Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+	Info: Processing started: Sun May 03 21:21:24 2026
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off EdgeReflex -c EdgeReflex
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/weight_rom.v
+	Info (12023): Found entity 1: weight_rom
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/tb_spi_slave.v
+	Info (12023): Found entity 1: tb_spi_slave
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/tb_relu.v
+	Info (12023): Found entity 1: tb_relu
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/tb_mac_array.v
+	Info (12023): Found entity 1: tb_mac_array
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/tb_irq_gen.v
+	Info (12023): Found entity 1: tb_irq_gen
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/tb_edgereflex.v
+	Info (12023): Found entity 1: tb_EdgeReflex
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/spi_slave.v
+	Info (12023): Found entity 1: spi_slave
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/relu.v
+	Info (12023): Found entity 1: relu
+Warning (10259): Verilog HDL error at mac_array.v(65): constant value overflow
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/mac_array.v
+	Info (12023): Found entity 1: mac_array
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/irq_gen.v
+	Info (12023): Found entity 1: irq_gen
+Info (12021): Found 1 design units, including 1 entities, in source file /personal/edgereflex/fpga/src/edgereflex.v
+	Info (12023): Found entity 1: EdgeReflex
+Info (12021): Found 1 design units, including 1 entities, in source file weights_rom.v
+	Info (12023): Found entity 1: weights_rom
+Info (12127): Elaborating entity "EdgeReflex" for the top level hierarchy
+Info (12128): Elaborating entity "spi_slave" for hierarchy "spi_slave:spi_slave_inst"
+Info (12128): Elaborating entity "mac_array" for hierarchy "mac_array:mac_array_inst"
+Error (10232): Verilog HDL error at mac_array.v(41): index 19456 cannot fall outside the declared range [19455:0] for vector "data"
+Error (10232): Verilog HDL error at mac_array.v(41): index 19463 cannot fall outside the declared range [19455:0] for vector "data"
+Error (10903): Verilog HDL error at mac_array.v(59): failed to elaborate task or function "get_weight"
+Warning (10240): Verilog HDL Always Construct warning at mac_array.v(45): inferring latch(es) for variable "results", which holds its previous value in one or more paths through the always construct
+Error (12152): Can't elaborate user hierarchy "mac_array:mac_array_inst"
+Info (144001): Generated suppressed messages file C:/personal/EdgeReflex/fpga/synthesis/output_files/EdgeReflex.map.smsg
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 4 errors, 3 warnings
+	Error: Peak virtual memory: 4861 megabytes
+	Error: Processing ended: Sun May 03 21:22:01 2026
+	Error: Elapsed time: 00:00:37
+	Error: Total CPU time (on all processors): 00:00:33
+Error (293001): Quartus Prime Full Compilation was unsuccessful. 6 errors, 3 warnings

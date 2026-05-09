@@ -12,7 +12,6 @@ module mac_array (
     input start,
 
     input [2431:0] features,
-    input [19455:0] weights,
 
     output reg [511:0] results,
     output reg mac_done
@@ -21,9 +20,18 @@ module mac_array (
     localparam signed [31:0] SAT_POS = 32'sd127;
     localparam signed [31:0] SAT_NEG = -32'sd128;
 
-    integer neuron;
-    integer feature_idx;
-    integer signed_sum;
+    reg busy;
+    reg [5:0] neuron_idx;
+    reg [8:0] feature_idx;
+    reg [8:0] feature_idx_d;
+    reg [5:0] neuron_idx_d;
+    reg [5:0] warmup_count;
+    reg pending_valid;
+    reg signed [31:0] acc;
+    reg [15:0] weight_addr;
+    wire [7:0] weight_byte;
+    reg signed [15:0] signed_mul;
+    reg signed [31:0] signed_sum_next;
 
     function signed [7:0] get_feature;
         input [2431:0] data;
@@ -33,42 +41,97 @@ module mac_array (
         end
     endfunction
 
-    function signed [7:0] get_weight;
-        input [19455:0] data;
-        input [5:0] neuron_idx;
-        input [8:0] idx;
+    function signed [7:0] sat_int8;
+        input signed [31:0] val;
         begin
-            get_weight = data[(neuron_idx*304 + idx)*8 +: 8];
+            if (val > SAT_POS) begin
+                sat_int8 = 8'sd127;
+            end else if (val < SAT_NEG) begin
+                sat_int8 = 8'sh80;
+            end else begin
+                sat_int8 = val[7:0];
+            end
         end
     endfunction
+
+    weight_rom weight_rom_inst (
+        .clk(clk),
+        .addr(weight_addr),
+        .rd_data(weight_byte)
+    );
 
     always @(posedge clk or negedge rst_n) begin
         if (~rst_n) begin
             results <= 512'b0;
             mac_done <= 1'b0;
+            busy <= 1'b0;
+            neuron_idx <= 6'd0;
+            feature_idx <= 9'd0;
+            neuron_idx_d <= 6'd0;
+            feature_idx_d <= 9'd0;
+            warmup_count <= 6'd0;
+            pending_valid <= 1'b0;
+            acc <= 32'sd0;
+            weight_addr <= 16'd0;
         end else begin
             mac_done <= 1'b0;
 
-            if (start) begin
-                for (neuron = 0; neuron < 64; neuron = neuron + 1) begin
-                    signed_sum = 0;
+            if (start && ~busy) begin
+                busy <= 1'b1;
+                neuron_idx <= 6'd0;
+                feature_idx <= 9'd0;
+                neuron_idx_d <= 6'd0;
+                feature_idx_d <= 9'd0;
+                warmup_count <= 6'd0;
+                pending_valid <= 1'b0;
+                acc <= 32'sd0;
+                results <= 512'b0;
+                weight_addr <= 16'd0;
+            end else if (busy) begin
+                // Keep issuing addresses. The generated ROM has registered outputs,
+                // so data returns after a few cycles and is consumed with delayed indices.
+                if (pending_valid) begin
+                    signed_mul = $signed(get_feature(features, feature_idx_d)) *
+                                 $signed(weight_byte);
+                    signed_sum_next = acc + signed_mul;
 
-                    for (feature_idx = 0; feature_idx < 304; feature_idx = feature_idx + 1) begin
-                        signed_sum = signed_sum +
-                                     ($signed(get_feature(features, feature_idx[8:0])) *
-                                      $signed(get_weight(weights, neuron[5:0], feature_idx[8:0])));
-                    end
+                    if (feature_idx_d == 9'd303) begin
+                        results[neuron_idx_d*8 +: 8] <= sat_int8(signed_sum_next);
 
-                    if (signed_sum > SAT_POS) begin
-                        results[neuron*8 +: 8] <= 8'sd127;
-                    end else if (signed_sum < SAT_NEG) begin
-                        results[neuron*8 +: 8] <= -8'sd128;
+                        if (neuron_idx_d == 6'd63) begin
+                            busy <= 1'b0;
+                            mac_done <= 1'b1;
+                            feature_idx <= 9'd0;
+                            neuron_idx <= 6'd0;
+                            feature_idx_d <= 9'd0;
+                            neuron_idx_d <= 6'd0;
+                            warmup_count <= 6'd0;
+                            pending_valid <= 1'b0;
+                            acc <= 32'sd0;
+                        end else begin
+                            acc <= 32'sd0;
+                        end
                     end else begin
-                        results[neuron*8 +: 8] <= signed_sum[7:0];
+                        acc <= signed_sum_next;
                     end
                 end
 
-                mac_done <= 1'b1;
+                if (feature_idx == 9'd303) begin
+                    feature_idx <= 9'd0;
+                    neuron_idx <= neuron_idx + 1'b1;
+                end else begin
+                    feature_idx <= feature_idx + 1'b1;
+                end
+
+                weight_addr <= ({10'd0, neuron_idx} * 16'd304) + {7'd0, feature_idx};
+                neuron_idx_d <= neuron_idx;
+                feature_idx_d <= feature_idx;
+
+                if (warmup_count < 6'd3) begin
+                    warmup_count <= warmup_count + 1'b1;
+                    if (warmup_count == 6'd2)
+                        pending_valid <= 1'b1;
+                end
             end
         end
     end

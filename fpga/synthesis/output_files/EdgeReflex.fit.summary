@@ -1,0 +1,20 @@
+Fitter Status : Successful - Fri May 08 15:57:27 2026
+Quartus Prime Version : 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+Revision Name : EdgeReflex
+Top-level Entity Name : EdgeReflex
+Family : Cyclone V
+Device : 5CEBA4F23C7
+Timing Models : Final
+Logic utilization (in ALMs) : 2,654 / 18,480 ( 14 % )
+Total registers : 5176
+Total pins : 7 / 224 ( 3 % )
+Total virtual pins : 0
+Total block memory bits : 524,288 / 3,153,920 ( 17 % )
+Total RAM Blocks : 64 / 308 ( 21 % )
+Total DSP Blocks : 2 / 66 ( 3 % )
+Total HSSI RX PCSs : 0
+Total HSSI PMA RX Deserializers : 0
+Total HSSI TX PCSs : 0
+Total HSSI PMA TX Serializers : 0
+Total PLLs : 0 / 4 ( 0 % )
+Total DLLs : 0 / 4 ( 0 % )

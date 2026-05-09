@@ -41,13 +41,13 @@
  *     MISO:  GPIO0[1]  (Pin 2 of header)
  *     SCLK:  GPIO0[2]  (Pin 3 of header)
  *     CS_N:  GPIO0[3]  (Pin 4 of header)
- *     IRQ:   GPIO0[4]  (Pin 5 of header)
+ *     IRQ:   GPIO0[10]  (JP1 pin 11, FPGA ball N21)
  *   
  *   These assignments must be configured in the Quartus Pin Planner.
  *   Update this file with actual pin numbers after board characterization.
  */
 
-module top (
+module EdgeReflex (
     input clk,                  // 50 MHz
     input rst_n,                // Active-low reset (from board reset button)
     
@@ -110,7 +110,6 @@ module top (
         .rst_n(rst_n),
         .start(start_mac),
         .features(rx_data),
-        .weights({64*304{1'b0}}),  // Placeholder: weights would be loaded here
         .results(mac_results),
         .mac_done(mac_done)
     );
@@ -144,10 +143,9 @@ module top (
             tx_valid <= 1'b0;
             relu_valid <= 1'b0;
         end else begin
-            // Default: clear pulses
+            // Default: clear pulses. Only `start_mac` is auto-cleared here.
+            // `tx_valid` and `relu_valid` are managed explicitly in states
             start_mac <= 1'b0;
-            tx_valid <= 1'b0;
-            relu_valid <= 1'b0;
             
             case (state)
                 IDLE: begin
@@ -166,16 +164,16 @@ module top (
                 
                 COMPUTING: begin
                     if (mac_done) begin
-                        // MAC results ready; ReLU output valid after one cycle
-                        relu_valid <= 1'b1;
-                        tx_valid <= 1'b1;  // Signal SPI slave to prepare result
-                        state <= SENDING;
+                        relu_valid <= 1'b1;  // hold high — do NOT clear in default
+                        tx_valid   <= 1'b1;
+                        state      <= SENDING;
                     end
                 end
-                
+
                 SENDING: begin
+                    relu_valid <= 1'b0;  // clear after irq_gen has latched it
+                    tx_valid   <= 1'b0;
                     if (send_done) begin
-                        // All 64 result bytes transmitted
                         state <= IDLE;
                     end
                 end

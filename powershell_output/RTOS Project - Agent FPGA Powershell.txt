@@ -1,0 +1,167 @@
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log analysis/agent_fpga_run2.log --cpu-hz 80000000 --ci bound
+[error] log file not found: analysis\agent_fpga_run2.log
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_fpga_run2.log --cpu-hz 80000000 --ci bound
+=== WCET Summary (last reported snapshot) ===
+count           : 72
+warmup_discarded: 8
+min             :  252191306 cycles  (3152.391 ms)
+mean            :  252247415 cycles  (3153.093 ms)
+p99             :  252412972 cycles  (3155.162 ms)
+max             :  252412972 cycles  (3155.162 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :  283964593 cycles  (3549.557 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 72
+preempted       : 72
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+=== Confidence Notes ===
+- sample count is low; target at least 1,000-10,000 windows for stronger tails
+- histogram overflow > 0; increase bin range for trustworthy p99 binning
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+Inference,1,100.000,100.000,3549.557,35.495574,inference.bound
+
+=== Utilization Check ===
+U_total=35.495574
+U_bound(n=1)=1.000000
+util_test=NOT_SUFFICIENT (run RTA)
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+Inference,1,3549.557,100.000,-3449.557,NO
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_fpga_run2.log --cpu-hz 80000000 --ci max_preempted
+usage: wcet_rm_report.py [-h] --log LOG [--cpu-hz CPU_HZ] [--ci {max,bound,p99,max_unpreempted}]
+                         [--infer-period-ms INFER_PERIOD_MS] [--task-csv TASK_CSV]
+wcet_rm_report.py: error: argument --ci: invalid choice: 'max_preempted' (choose from 'max', 'bound', 'p99', 'max_unpreempted')
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_fpga_run2.log --cpu-hz 80000000 --ci max_unpreempted
+=== WCET Summary (last reported snapshot) ===
+count           : 72
+warmup_discarded: 8
+min             :  252191306 cycles  (3152.391 ms)
+mean            :  252247415 cycles  (3153.093 ms)
+p99             :  252412972 cycles  (3155.162 ms)
+max             :  252412972 cycles  (3155.162 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :  283964593 cycles  (3549.557 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 72
+preempted       : 72
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+=== Confidence Notes ===
+- sample count is low; target at least 1,000-10,000 windows for stronger tails
+- histogram overflow > 0; increase bin range for trustworthy p99 binning
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+Inference,1,100.000,100.000,0.000,0.000000,inference.max_unpreempted
+
+=== Utilization Check ===
+U_total=0.000000
+U_bound(n=1)=1.000000
+util_test=PASS
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+Inference,1,0.000,100.000,100.000,YES
+PS C:\personal\EdgeReflex\analysis> python build_task_set_from_log.py --log agent_fpga_run2.log --out task_set_agent_fpga.csv
+[ok] wrote task_set_agent_fpga.csv
+[summary] derived ci_ms from TASK_CSV max cycles:
+  Sensor: 2.131 ms
+  UART  : 0.000 ms
+  Logger: 26.759 ms
+[summary] inference period written to task set: 100.000 ms
+[next] run:
+  python wcet_rm_report.py --log agent_fpga_run2.log --task-csv task_set_agent_fpga.csv --ci bound
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_fpga_run2.log --task-csv task_set_agent_fpga.csv --ci bound
+=== WCET Summary (last reported snapshot) ===
+count           : 72
+warmup_discarded: 8
+min             :  252191306 cycles  (5043.826 ms)
+mean            :  252247415 cycles  (5044.948 ms)
+p99             :  252412972 cycles  (5048.259 ms)
+max             :  252412972 cycles  (5048.259 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :  283964593 cycles  (5679.292 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 72
+preempted       : 72
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+=== Confidence Notes ===
+- sample count is low; target at least 1,000-10,000 windows for stronger tails
+- histogram overflow > 0; increase bin range for trustworthy p99 binning
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+UART,1,10.000,10.000,0.000,0.000000,measured.task_csv_max
+Sensor,2,20.000,20.000,2.131,0.106550,measured.task_csv_max
+Inference,3,100.000,100.000,5679.292,56.792919,inference.bound
+Logger,4,100.000,100.000,26.759,0.267590,measured.task_csv_max
+Feedback,5,100.000,100.000,196.085,1.960850,measured.task_csv_max
+
+=== Utilization Check ===
+U_total=59.127909
+U_bound(n=5)=0.743492
+util_test=NOT_SUFFICIENT (run RTA)
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+UART,1,0.000,10.000,10.000,YES
+Sensor,2,2.131,20.000,17.869,YES
+Inference,3,6284.496,100.000,-6184.496,NO
+Logger,4,5710.313,100.000,-5610.313,NO
+Feedback,5,11629.497,100.000,-11529.497,NO
+PS C:\personal\EdgeReflex\analysis> python wcet_rm_report.py --log agent_fpga_run2.log --task-csv task_set_agent_fpga.csv --ci max
+=== WCET Summary (last reported snapshot) ===
+count           : 72
+warmup_discarded: 8
+min             :  252191306 cycles  (5043.826 ms)
+mean            :  252247415 cycles  (5044.948 ms)
+p99             :  252412972 cycles  (5048.259 ms)
+max             :  252412972 cycles  (5048.259 ms)
+max_unpreempted :          0 cycles  (   0.000 ms)
+bound           :  283964593 cycles  (5679.292 ms)
+overhead        :          4 cycles  (   0.000 ms)
+hist_overflow   : 72
+preempted       : 72
+unpreempted     : 0
+preempted_ratio  : 100.00%
+
+=== Confidence Notes ===
+- sample count is low; target at least 1,000-10,000 windows for stronger tails
+- histogram overflow > 0; increase bin range for trustworthy p99 binning
+- more than 10% samples were preempted; treat max as inflated by interference
+- no non-preempted samples observed; cannot separate pure C_i from interference
+
+=== RM Input Table ===
+task,priority,period_ms,deadline_ms,C_i_ms,util_i,ci_source
+UART,1,10.000,10.000,0.000,0.000000,measured.task_csv_max
+Sensor,2,20.000,20.000,2.131,0.106550,measured.task_csv_max
+Inference,3,100.000,100.000,5048.259,50.482594,inference.max
+Logger,4,100.000,100.000,26.759,0.267590,measured.task_csv_max
+Feedback,5,100.000,100.000,196.085,1.960850,measured.task_csv_max
+
+=== Utilization Check ===
+U_total=52.817584
+U_bound(n=5)=0.743492
+util_test=NOT_SUFFICIENT (run RTA)
+
+=== Response-Time Analysis ===
+task,priority,R_i_ms,D_i_ms,margin_ms,schedulable
+UART,1,0.000,10.000,10.000,YES
+Sensor,2,2.131,20.000,17.869,YES
+Inference,3,5587.402,100.000,-5487.402,NO
+Logger,4,5079.280,100.000,-4979.280,NO
+Feedback,5,10367.432,100.000,-10267.432,NO
