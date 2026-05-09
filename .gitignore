@@ -2,3 +2,5 @@ wcet_run*.log
 wcet_console_run*.log
 real_imu_run*.log
 agent_software_run*.log
+agent_fpga_run*.log
+agent_feedback_run*.log

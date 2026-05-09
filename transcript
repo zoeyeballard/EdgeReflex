@@ -1,0 +1,16 @@
+# vsim -c work.tb_relu -do "run -all; quit -f" 
+# Start time: 20:54:57 on May 03,2026
+# Loading work.tb_relu
+# Loading work.relu
+# run -all
+# === Test 1: Positive values ===
+# Input[0:3]:   10   20   30   40
+# Output[0:3]:   10   20   30   40
+# === Test 2: Negative values ===
+# Input[4:7]:  -10  -20  -30  -40
+# Output[4:7]:    0    0    0    0
+# PASS: Negative values zeroed by ReLU
+# ** Note: $finish    : C:/personal/EdgeReflex/fpga/tb_relu.v(72)
+#    Time: 1080 ns  Iteration: 0  Instance: /tb_relu
+# End time: 20:54:57 on May 03,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

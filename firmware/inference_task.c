@@ -22,9 +22,12 @@
 #include "inference_task.h"
 #include "priorities.h"
 #include "har_model.h"
+#include "har_model_layer.h"
+#include "spi_master.h"
 #include "smoothing.h"
 
 #define INFERENCE_USE_HAR_MODEL      1
+#define INFERENCE_USE_SPI_FPGA       1  // NEW: Enable FPGA Layer 1 offload
 #define INFERENCE_LOG_EACH_WINDOW    0
 #define INFERENCE_PERIOD_MS         100U
 #define WCET_WARMUP_SAMPLES          8U
@@ -235,6 +238,11 @@ static void AgentStateUpdate(HarClass_t cls, uint32_t timestamp_ms)
 // run_inference_stub - replace with your real model call.
 // Currently just cycles through class labels so you can see output flowing.
 //*****************************************************************************
+static HarClass_t run_inference_stub(const SensorWindow_t *pWindow);
+
+// Forward declaration
+static HarClass_t RunHarInferenceWithFpga(const SensorWindow_t *pWindow);
+
 static HarClass_t run_inference_stub(const SensorWindow_t *pWindow)
 {
     (void)pWindow;  // suppress unused warning until real model is wired in
@@ -248,8 +256,85 @@ static HarClass_t RunHarInference(const SensorWindow_t *pWindow)
 
     BuildHarInput(pWindow);
 
+    #if INFERENCE_USE_SPI_FPGA
+    // Offload Layer 1 to FPGA
+    return RunHarInferenceWithFpga(pWindow);
+    #else
+    // Pure software inference
     label = har_infer(g_fHarInput);
+    #endif
 
+    if (label == 0) return HAR_CLASS_WALKING;
+    if (label == 1) return HAR_CLASS_RUNNING;
+    if (label == 2) return HAR_CLASS_SITTING;
+    if (label == 3) return HAR_CLASS_STANDING;
+    return HAR_CLASS_UNKNOWN;
+}
+
+/*
+ * RunHarInferenceWithFpga - Inference with Layer 1 offloaded to FPGA
+ * 
+ * Flow:
+ *   1. Preprocess input (standardization)
+ *   2. Extract first 304 features (300 sensor + 4 agent state)
+ *   3. Send as INT8 to FPGA over SPI
+ *   4. Wait for FPGA computation (IRQ)
+ *   5. Receive 64-byte Layer 1 result
+ *   6. Dequantize and run Layer 2
+ */
+static HarClass_t RunHarInferenceWithFpga(const SensorWindow_t *pWindow)
+{
+    float scaled[HAR_INPUT_DIM];
+    float h1_float[HAR_HIDDEN1_DIM];
+    int8_t h1_int8[64];
+    int label;
+    int32_t spi_result;
+    
+    (void)pWindow;  // Already processed by BuildHarInput
+    
+    // Step 1: Preprocess input (standardization)
+    HarPreprocess(g_fHarInput, scaled);
+    
+    // Step 2: Extract first 304 features as INT8
+    // For FPGA, we send INT8 quantized values
+    // Quantization scheme: clip to [-128, 127] range
+    int8_t fpga_input[304];
+    for (int i = 0; i < 304; i++) {
+        float val = scaled[i];
+        // Simple quantization: scale to [-128, 127] range
+        // Assuming scaled values are roughly in [-4, 4] range
+        int32_t quantized = (int32_t)(val * 31.875f);  // scale by 127/4
+        if (quantized > 127) quantized = 127;
+        if (quantized < -128) quantized = -128;
+        fpga_input[i] = (int8_t)quantized;
+    }
+    
+    // Step 3: Send features to FPGA over SPI
+    spi_result = SpiSendFeatures(fpga_input, 304);
+    if (spi_result != 0) {
+        UARTprintf("[INFER] SPI send failed\n");
+        return HAR_CLASS_UNKNOWN;
+    }
+    
+    // Step 4: Wait for FPGA computation done (5 second timeout)
+    spi_result = SpiWaitComputeDone(5000);
+    if (spi_result != 0) {
+        UARTprintf("[INFER] SPI timeout waiting for compute done\n");
+        return HAR_CLASS_UNKNOWN;
+    }
+    
+    // Step 5: Receive Layer 1 result from FPGA (64 bytes INT8)
+    spi_result = SpiRecvLayer1(h1_int8, 64);
+    if (spi_result != 0) {
+        UARTprintf("[INFER] SPI recv failed\n");
+        return HAR_CLASS_UNKNOWN;
+    }
+    
+    // Step 6: Dequantize Layer 1 result and run Layer 2
+    HarDequantizeLayer1(h1_int8, h1_float);
+    label = HarInferenceLayer2(h1_float);
+    
+    // Map label to HAR_CLASS_t
     if (label == 0) return HAR_CLASS_WALKING;
     if (label == 1) return HAR_CLASS_RUNNING;
     if (label == 2) return HAR_CLASS_SITTING;
@@ -335,6 +420,8 @@ static void InferenceTask(void *pvParameters)
 //*****************************************************************************
 uint32_t InferenceTaskInit(void)
 {
+    int32_t spi_result;
+    
     DWT_Init();
     g_sWcet.overhead = DWT_CalibrateOverhead();
 
@@ -343,6 +430,18 @@ uint32_t InferenceTaskInit(void)
     {
         return 1;
     }
+
+    #if INFERENCE_USE_SPI_FPGA
+    // Initialize SPI master for FPGA communication
+    spi_result = SpiMasterInit();
+    if (spi_result != 0) {
+        UARTprintf("[INFER] SPI initialization failed\n");
+        return 1;
+    }
+    
+    // Initialize Layer split model
+    HarModelLayerInit();
+    #endif
 
     if (xTaskCreate(InferenceTask, "INFER", INFERENCE_TASK_STACK, NULL,
                     tskIDLE_PRIORITY + PRIORITY_INFERENCE_TASK, NULL) != pdTRUE)
